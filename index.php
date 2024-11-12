@@ -4,8 +4,8 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require 'autoload.php';
-require 'connexionPDO.php';
+//require 'autoload.php';
+// require 'models/connexionPDO.php';
 
 class Router
 {
@@ -71,7 +71,7 @@ class Router
 }
 
 // Instanciation du routeur
-$router = new Router('DemoMVC');
+$router = new Router('views/acceuil.php');
 
 header('Location : /views/acceuil.php');
 
