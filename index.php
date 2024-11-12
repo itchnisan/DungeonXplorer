@@ -1,54 +1,3 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page de Jeu</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <!-- Barre supérieure avec logo et profil utilisateur -->
-    <header>
-        <div class="logo">LOGO</div>
-        <div class="user-icon">Utilisateur</div>
-    </header>
-
-    <!-- Contenu principal -->
-    <main>
-        <!-- Titre du chapitre et boutons de profil/combat -->
-        <section class="chapter">
-            <h1>Titre du Chapitre</h1>
-            <div class="actions">
-                <button id="profile-btn">Profil</button>
-                <button id="combat-btn">Combat</button>
-            </div>
-        </section>
-
-        <!-- Contenu dynamique -->
-        <section class="content">
-            <p>Contenu du chapitre ici...</p>
-            <div class="links">
-                <a href="#">Lien 1</a>
-                <a href="#">Lien 2</a>
-                <a href="#">Lien 3</a>
-            </div>
-        </section>
-
-        <!-- Section de l'inventaire/description -->
-        <section class="details" id="details">
-            <div class="character-info">
-                <h2>Class</h2>
-                <p>Bio</p>
-                <p>Caractéristiques</p>
-                <h3>Inventaire</h3>
-                <p>Potion HP <button>Utiliser</button></p>
-            </div>
-        </section>
-    </main>
-
-    <script src="script.js"></script>
-</body>
-</html>
 <?php
 
 ini_set('display_errors', 1);
@@ -56,7 +5,74 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 require 'autoload.php';
+require 'connexionPDO.php';
 
-require_once 'model/connexionPDO.php';
+class Router
+{
+    private $routes = [];
+    private $prefix;
+
+    public function __construct($prefix = '')
+    {
+        $this->prefix = trim($prefix, '/');
+    }
+
+    public function addRoute($uri, $controllerMethod)
+    {
+        $this->routes[trim($uri, '/')] = $controllerMethod;
+    }
+
+    public function route($url)
+    {
+        // Enlève le préfixe du début de l'URL
+        if ($this->prefix && strpos($url, $this->prefix) === 0) {
+            $url = substr($url, strlen($this->prefix) + 1);
+        }
+
+        // Enlève les barres obliques en trop
+        $url = trim($url, '/');
+
+        // Vérification de la correspondance de l'URL à une route définie
+        foreach ($this->routes as $route => $controllerMethod) {
+            // Vérifie si l'URL correspond à une route avec des paramètres
+            $routeParts = explode('/', $route);
+            $urlParts = explode('/', $url);
+
+            // Si le nombre de segments correspond
+            if (count($routeParts) === count($urlParts)) {
+                // Vérification de chaque segment
+                $params = [];
+                $isMatch = true;
+                foreach ($routeParts as $index => $part) {
+                    if (preg_match('/^{\w+}$/', $part)) {
+                        // Capture les paramètres
+                        $params[] = $urlParts[$index];
+                    } elseif ($part !== $urlParts[$index]) {
+                        $isMatch = false;
+                        break;
+                    }
+                }
+
+                if ($isMatch) {
+                    // Extraction du nom du contrôleur et de la méthode
+                    list($controllerName, $methodName) = explode('@', $controllerMethod);
+
+                    // Instanciation du contrôleur et appel de la méthode avec les paramètres
+                    $controller = new $controllerName();
+                    call_user_func_array([$controller, $methodName], $params);
+                    return;
+                }
+            }
+        }
+
+        // Si aucune route n'a été trouvée, gérer l'erreur 404
+        require_once 'views/404.php';
+    }
+}
+
+// Instanciation du routeur
+$router = new Router('DemoMVC');
+
+header('Location : /views/acceuil.php');
 
 ?>
