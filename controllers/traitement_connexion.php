@@ -9,7 +9,7 @@ session_start();
 		echo "</PRE>";
 	}
 
-	include_once "connextionPDO.php";
+	include_once "../models/connexionPDO.php";
 
     $_SESSION['loggedin'] = false;
 	$_SESSION['isAdmin'] = false;
@@ -71,7 +71,7 @@ session_start();
 			}
 		}
 		
-		/*switch($erreur)
+		switch($erreur)
 		{
 			case 0:
 				echo $_SESSION['loggedin'];
@@ -79,10 +79,10 @@ session_start();
 			default:
 				echo "<script type='text/javascript'>
 					alert('Courriel ou MDP incorrect');
-					window.location.href = 'connexion.htm';
+					window.location.href = '../index.php';
 				</script>";
                 break;
-		}*/
+		}
 	}
 
 	if($mysqlClient){
