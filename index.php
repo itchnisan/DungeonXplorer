@@ -6,6 +6,6 @@ error_reporting(E_ALL);
 
 require 'autoload.php';
 
-require_once 'connexionPDO.php';
+require_once 'model/connexionPDO.php';
 
 ?>
