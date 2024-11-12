@@ -1,0 +1,4 @@
+<?php
+    $hero = $mysqlclient->prepare('SELECT * FROM HERE')
+
+?>
