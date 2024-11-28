@@ -4,7 +4,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-//require 'autoload.php';
+require 'autoload.php';
 // require 'models/connexionPDO.php';
 
 class Router
@@ -71,8 +71,16 @@ class Router
 }
 
 // Instanciation du routeur
-$router = new Router('views/acceuil.php');
+$router = new Router('DungeonXplorer');
 
-header('Location : /views/acceuil.php');
+// Ajout des routes
+$router->addRoute('', 'HomeController@index'); // Pour la racine
+$router->addRoute('Chapter', 'ChapterController@show'); // Pour la liste des tâches
+// $router->addRoute('tasks/{id}', 'TaskController@show'); // Pour afficher une tâche par ID
+// $router->addRoute('about', 'AboutController@index'); // Pour la page "about"
+
+// Appel de la méthode route
+$router->route(trim($_SERVER['REQUEST_URI'], '/'));
+
 
 ?>

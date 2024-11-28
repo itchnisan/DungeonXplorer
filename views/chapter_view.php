@@ -1,5 +1,6 @@
 <?php
 // view/chapter.php
+require_once 'controllers/ChapterController.php';
 
 $chapter = $chapterController->getChapter($chapterId);
 ?>
