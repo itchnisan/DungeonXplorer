@@ -15,7 +15,7 @@ class ChapterController
             1,
             "La Forêt Enchantée",
             "Vous vous trouvez dans une forêt sombre et enchantée. Deux chemins se présentent à vous.",
-            "images/forêt.jpg", // Chemin vers l'image
+            "images/BrambleTrails01.jpg", // Chemin vers l'image
             [
                 ["text" => "Aller à gauche", "chapter" => 2],
                 ["text" => "Aller à droite", "chapter" => 3]
@@ -37,10 +37,11 @@ class ChapterController
 
     public function show($id)
     {
+        echo($id);
         $chapter = $this->getChapter($id);
 
         if ($chapter) {
-            include 'view/chapter.php'; // Charge la vue pour le chapitre
+            include 'views/chapter_view.php'; // Charge la vue pour le chapitre
         } else {
             // Si le chapitre n'existe pas, redirige vers un chapitre par défaut ou affiche une erreur
             header('HTTP/1.0 404 Not Found');

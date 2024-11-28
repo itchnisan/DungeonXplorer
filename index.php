@@ -74,12 +74,14 @@ class Router
 $router = new Router('DungeonXplorer');
 
 // Ajout des routes
-$router->addRoute('', 'HomeController@index'); // Pour la racine
-$router->addRoute('Chapter', 'ChapterController@show'); // Pour la liste des tâches
+//$router->addRoute('', 'HomeController@index'); // Pour la racine
+$router->addRoute('Chapter/{id}', 'ChapterController@show'); // Pour la liste des tâches
 // $router->addRoute('tasks/{id}', 'TaskController@show'); // Pour afficher une tâche par ID
 // $router->addRoute('about', 'AboutController@index'); // Pour la page "about"
 
 // Appel de la méthode route
+$router->route('Chapter/1');
+
 $router->route(trim($_SERVER['REQUEST_URI'], '/'));
 
 
