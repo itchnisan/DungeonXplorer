@@ -1,6 +1,6 @@
 <?php
 
-// models/Monster.php
+// models/Class.php
 
 abstract class Classe
 {
