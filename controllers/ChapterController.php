@@ -3,6 +3,7 @@
 // controllers/ChapterController.php
 
 require_once 'models/Chapter.php';
+//require_once 'views/chapter_view.php';
 
 class ChapterController
 {
@@ -15,7 +16,7 @@ class ChapterController
             1,
             "La Forêt Enchantée",
             "Vous vous trouvez dans une forêt sombre et enchantée. Deux chemins se présentent à vous.",
-            "images/BrambleTrails01.jpg", // Chemin vers l'image
+            "../Images/BrambleTrails01.jpg", // Chemin vers l'image
             [
                 ["text" => "Aller à gauche", "chapter" => 2],
                 ["text" => "Aller à droite", "chapter" => 3]
@@ -26,7 +27,7 @@ class ChapterController
             2,
             "Le Lac Mystérieux",
             "Vous arrivez à un lac aux eaux limpides. Une créature vous observe.",
-            "images/lac.jpg", // Chemin vers l'image
+            "../Images/lac.jpg", // Chemin vers l'image
             [
                 ["text" => "Nager dans le lac", "chapter" => 4],
                 ["text" => "Faire demi-tour", "chapter" => 1]
@@ -37,7 +38,6 @@ class ChapterController
 
     public function show($id)
     {
-        echo($id);
         $chapter = $this->getChapter($id);
 
         if ($chapter) {

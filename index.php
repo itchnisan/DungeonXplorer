@@ -1,88 +1,59 @@
 <?php
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+    // Include the Router class
+    // @note: it's recommended to just use the composer autoloader when working with other packages too
+    require_once __DIR__ . '/Router/Router.php';
+    require_once __DIR__ . '/controllers/ChapterController.php';
 
-require 'autoload.php';
-// require 'models/connexionPDO.php';
+    // Create a Router
+    $router = new \Bramus\Router\Router();
 
-class Router
-{
-    private $routes = [];
-    private $prefix;
+    // Custom 404 Handler
+    $router->set404(function () {
+        header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
+        echo '404, route not found!';
+    });
 
-    public function __construct($prefix = '')
-    {
-        $this->prefix = trim($prefix, '/');
-    }
+    // custom 404
+    $router->set404('/test(/.*)?', function () {
+        header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
+        echo '<h1><mark>404, route not found!</mark></h1>';
+    });
 
-    public function addRoute($uri, $controllerMethod)
-    {
-        $this->routes[trim($uri, '/')] = $controllerMethod;
-    }
+    $router->set404('/api(/.*)?', function() {
+        header('HTTP/1.1 404 Not Found');
+        header('Content-Type: application/json');
 
-    public function route($url)
-    {
-        // Enlève le préfixe du début de l'URL
-        if ($this->prefix && strpos($url, $this->prefix) === 0) {
-            $url = substr($url, strlen($this->prefix) + 1);
-        }
+        $jsonArray = array();
+        $jsonArray['status'] = "404";
+        $jsonArray['status_text'] = "route not defined";
 
-        // Enlève les barres obliques en trop
-        $url = trim($url, '/');
+        echo json_encode($jsonArray);
+    });
 
-        // Vérification de la correspondance de l'URL à une route définie
-        foreach ($this->routes as $route => $controllerMethod) {
-            // Vérifie si l'URL correspond à une route avec des paramètres
-            $routeParts = explode('/', $route);
-            $urlParts = explode('/', $url);
+    // Before Router Middleware
+    $router->before('GET', '/.*', function () {
+        header('X-Powered-By: bramus/router');
+    });
 
-            // Si le nombre de segments correspond
-            if (count($routeParts) === count($urlParts)) {
-                // Vérification de chaque segment
-                $params = [];
-                $isMatch = true;
-                foreach ($routeParts as $index => $part) {
-                    if (preg_match('/^{\w+}$/', $part)) {
-                        // Capture les paramètres
-                        $params[] = $urlParts[$index];
-                    } elseif ($part !== $urlParts[$index]) {
-                        $isMatch = false;
-                        break;
-                    }
-                }
+    // Static route: / (homepage)
+    $router->get('/Chapter/(\d+)', 'ChapterController@show');
 
-                if ($isMatch) {
-                    // Extraction du nom du contrôleur et de la méthode
-                    list($controllerName, $methodName) = explode('@', $controllerMethod);
+    // Static route: /hello
+    $router->get('/hello', function () {
+        echo '<h1>bramus/router</h1><p>Visit <code>/hello/<em>name</em></code> to get your Hello World mojo on!</p>';
+    });
 
-                    // Instanciation du contrôleur et appel de la méthode avec les paramètres
-                    $controller = new $controllerName();
-                    call_user_func_array([$controller, $methodName], $params);
-                    return;
-                }
-            }
-        }
+    // Dynamic route: /hello/name
+    $router->get('/hello/(\w+)', function ($name) {
+        echo 'Hello ' . htmlentities($name);
+    });
 
-        // Si aucune route n'a été trouvée, gérer l'erreur 404
-        require_once 'views/404.php';
-    }
-}
+    $router->get('/',function() {
+        header('Location: /DungeonXplorer/Chapter/1');
+    });
 
-// Instanciation du routeur
-$router = new Router('DungeonXplorer');
-
-// Ajout des routes
-//$router->addRoute('', 'HomeController@index'); // Pour la racine
-$router->addRoute('Chapter/{id}', 'ChapterController@show'); // Pour la liste des tâches
-// $router->addRoute('tasks/{id}', 'TaskController@show'); // Pour afficher une tâche par ID
-// $router->addRoute('about', 'AboutController@index'); // Pour la page "about"
-
-// Appel de la méthode route
-$router->route('Chapter/1');
-
-$router->route(trim($_SERVER['REQUEST_URI'], '/'));
-
+     // Thunderbirds are go!
+     $router->run();
 
 ?>
