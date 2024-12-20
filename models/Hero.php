@@ -2,47 +2,48 @@
 
 // models/Hero.php
 
-abstract class Hero
+class Hero
 {
     protected $id;
+    protected $userId;
     protected $name;
-    protected $classId;
+    protected $class_id;
     protected $image;
     protected $biography;
     protected $pv;
     protected $mana;
     protected $strength;
     protected $initiative;
-    protected $armor;
-    protected $primary_weapon;
-    protected $secondary_weapon;
-    protected $shield;
-    protected $spell_list;
+    protected $bourse;
     protected $xp;
-    protected $current_level;
+    protected $currentLevel;
 
-    public function __construct($name,$classID, $image, $biography, $pv, $mana, $strength, $initiative,$armor, $primary_weapon, $secondary_weapon, $shield, $spell_list, $xp, $current_level)
+    public function __construct($userId, $name,$class_id, $image, $biography, $pv, $mana, $strength, $initiative, $bourse, $xp, $currentLevel)
     {
+        $this->userId = $userId;
         $this->name = $name;
-        $this->classId = $classID;
+        $this->class_id = $class_id;
         $this->image = $image;
         $this->biography = $biography;
         $this->pv = $pv;
         $this->mana = $mana;
         $this->strength = $strength;
         $this->initiative = $initiative;
-        $this->armor = $armor;
-        $this->primary_weapon = $primary_weapon;
-        $this->secondary_weapon = $secondary_weapon;
-        $this->shield = $shield;
-        $this->spell_list = $spell_list;
+        $this->bourse = $bourse;
         $this->xp = $xp;
-        $this->current_level = $current_level;
+        $this->currentLevel = $currentLevel;
     }
 
-    //abstract public function attack();
+    public function hydrate(array $donnees)
+    {
+        foreach ($donnees as $key => $value) {
+            $method = 'set' . ucfirst($key);
 
-    
+            if (method_exists($this, $method)) {
+                $this->$method($value);
+            }
+        }
+    }
 
     /**
      * Get the value of id
@@ -58,6 +59,24 @@ abstract class Hero
     public function setId($id): self
     {
         $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of userId
+     */
+    public function getUserId()
+    {
+        return $this->userId;
+    }
+
+    /**
+     * Set the value of userId
+     */
+    public function setUserId($userId): self
+    {
+        $this->userId = $userId;
 
         return $this;
     }
@@ -189,91 +208,19 @@ abstract class Hero
     }
 
     /**
-     * Get the value of armor
+     * Get the value of bourse
      */
-    public function getArmor()
+    public function getBourse()
     {
-        return $this->armor;
+        return $this->bourse;
     }
 
     /**
-     * Set the value of armor
+     * Set the value of bourse
      */
-    public function setArmor($armor): self
+    public function setBourse($bourse): self
     {
-        $this->armor = $armor;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of primary_weapon
-     */
-    public function getPrimaryWeapon()
-    {
-        return $this->primary_weapon;
-    }
-
-    /**
-     * Set the value of primary_weapon
-     */
-    public function setPrimaryWeapon($primary_weapon): self
-    {
-        $this->primary_weapon = $primary_weapon;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of secondary_weapon
-     */
-    public function getSecondaryWeapon()
-    {
-        return $this->secondary_weapon;
-    }
-
-    /**
-     * Set the value of secondary_weapon
-     */
-    public function setSecondaryWeapon($secondary_weapon): self
-    {
-        $this->secondary_weapon = $secondary_weapon;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of shield
-     */
-    public function getShield()
-    {
-        return $this->shield;
-    }
-
-    /**
-     * Set the value of shield
-     */
-    public function setShield($shield): self
-    {
-        $this->shield = $shield;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of spell_list
-     */
-    public function getSpellList()
-    {
-        return $this->spell_list;
-    }
-
-    /**
-     * Set the value of spell_list
-     */
-    public function setSpellList($spell_list): self
-    {
-        $this->spell_list = $spell_list;
+        $this->bourse = $bourse;
 
         return $this;
     }
@@ -297,37 +244,37 @@ abstract class Hero
     }
 
     /**
-     * Get the value of current_level
+     * Get the value of currentLevel
      */
     public function getCurrentLevel()
     {
-        return $this->current_level;
+        return $this->currentLevel;
     }
 
     /**
-     * Set the value of current_level
+     * Set the value of currentLevel
      */
-    public function setCurrentLevel($current_level): self
+    public function setCurrentLevel($currentLevel): self
     {
-        $this->current_level = $current_level;
+        $this->currentLevel = $currentLevel;
 
         return $this;
     }
 
     /**
-     * Get the value of classId
+     * Get the value of class_id
      */
     public function getClassId()
     {
-        return $this->classId;
+        return $this->class_id;
     }
 
     /**
-     * Set the value of classId
+     * Set the value of class_id
      */
-    public function setClassId($classId): self
+    public function setClassId($class_id): self
     {
-        $this->classId = $classId;
+        $this->class_id = $class_id;
 
         return $this;
     }
