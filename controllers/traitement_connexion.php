@@ -10,10 +10,14 @@ function afficherObj($obj)
 
 include_once "../models/connexionPDO.php";
 
+
 $_SESSION['loggedin'] = false;
 $_SESSION['isAdmin'] = false;
 $_SESSION['numero'] = null;
 $_SESSION['courriel'] = null;
+$_SESSION['hero'] = null;
+$_SESSION['spellList'] = null;
+$_SESSION['equipments'] = null;
 
 function connexion($mysqlClient)
 {

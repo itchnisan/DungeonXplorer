@@ -13,6 +13,9 @@ session_start();
 		$_SESSION['isAdmin'] = false;
 		unset($_SESSION['numero']);
 		unset($_SESSION['courriel']);
+		unset($_SESSION['hero']);
+		unset($_SESSION['spellList']);
+		unset($_SESSION['equipments']);
 		$_SESSION['loggedin'] = false;
 	}
 ?>
