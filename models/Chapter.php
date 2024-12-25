@@ -1,46 +1,74 @@
 <?php
 
-// models/Chapter.php
-
 class Chapter
 {
-    private $id;
-    private $title;
-    private $description;
-    private $image; 
-    private $choices;
+    protected $chapter_id;
+    protected $chapter_nom;
+    protected $chapter_content;
+    protected $chapter_image;
 
-    public function __construct($id, $title, $description, $image, $choices)
+    public function __construct()
     {
-        $this->id = $id;
-        $this->title = $title;
-        $this->description = $description;
-        $this->image = $image; 
-        $this->choices = $choices;
+        $this->chapter_id = null;
+        $this->chapter_nom = null;
+        $this->chapter_content = null;
+        $this->chapter_image = null;
     }
 
-    public function getId()
+    // Méthode hydrate
+    public function hydrate(array $data)
     {
-        return $this->id;
+        foreach ($data as $key => $value) {
+            $method = 'set' . str_replace(' ', '', ucwords(str_replace('_', ' ', $key)));
+
+            if (method_exists($this, $method)) {
+                $this->$method($value);
+            }
+        }
     }
 
-    public function getTitle()
+    // Getters et Setters
+    public function getChapterId()
     {
-        return $this->title;
+        return $this->chapter_id;
     }
 
-    public function getDescription()
+    public function setChapterId($chapter_id): self
     {
-        return $this->description;
+        $this->chapter_id = $chapter_id;
+        return $this;
     }
 
-    public function getImage()
+    public function getChapterNom()
     {
-        return $this->image; 
+        return $this->chapter_nom;
     }
 
-    public function getChoices()
+    public function setChapterNom($chapter_nom): self
     {
-        return $this->choices;
+        $this->chapter_nom = $chapter_nom;
+        return $this;
+    }
+
+    public function getChapterContent()
+    {
+        return $this->chapter_content;
+    }
+
+    public function setChapterContent($chapter_content): self
+    {
+        $this->chapter_content = $chapter_content;
+        return $this;
+    }
+
+    public function getChapterImage()
+    {
+        return $this->chapter_image;
+    }
+
+    public function setChapterImage($chapter_image): self
+    {
+        $this->chapter_image = $chapter_image;
+        return $this;
     }
 }
