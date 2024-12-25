@@ -2,10 +2,6 @@
 require_once 'controllers/ChapterController.php';
 
 
-$ChapterController= new ChapterController();
-$chapter =  $ChapterController->getChapter($id);
-
-$router = $GLOBALS['router'];
 ?>
 
 <!DOCTYPE html>
