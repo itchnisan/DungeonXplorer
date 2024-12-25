@@ -1,5 +1,5 @@
 <?php
 
 include_once "pdo_agile.php";
-$mysqlClient = OuvrirConnexionPDO('mysql:host=localhost;dbname=dx10_bd;charset=utf8', 'dx10' , 'shiaj0neesheeQui');
+$mysqlClient = OuvrirConnexionPDO("mysql:host=localhost;dbname=dx10;charset=utf8", "root" , "");
 ?>

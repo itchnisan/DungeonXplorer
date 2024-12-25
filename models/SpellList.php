@@ -7,15 +7,17 @@ class SpellList
     protected $heroId;
     protected $spellId;
 
-    public function __construct($heroId, $spellId)
+    public function __construct()
     {
-        $this->heroId = $heroId;
-        $this->spellId = $spellId;
+        $this->heroId = null;
+        $this->spellId = null;
     }
 
-    public function hydrate(array $data) {
-        foreach ($data as $key => $value) {
-            $method = 'set' . ucfirst($key);
+    public function hydrate(array $donnees)
+    {
+        foreach ($donnees as $key => $value) {
+            $method = 'set' . str_replace(' ', '', ucwords(str_replace('_', ' ', $key)));
+
             if (method_exists($this, $method)) {
                 $this->$method($value);
             }

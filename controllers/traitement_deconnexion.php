@@ -10,9 +10,12 @@ session_start();
 	}
 	else
 	{
-		$_SESSION['isAdmin'] = false;
+		//$_SESSION['isAdmin'] = false;
 		unset($_SESSION['numero']);
 		unset($_SESSION['courriel']);
+		unset($_SESSION['hero']);
+		unset($_SESSION['spellList']);
+		unset($_SESSION['equipments']);
 		$_SESSION['loggedin'] = false;
 	}
 ?>

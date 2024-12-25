@@ -9,16 +9,19 @@ class Equipment
     protected $itemId;
     protected $itemsType;
 
-    public function __construct($heroId, $itemId, $itemsType)
+    public function __construct()
     {
-        $this->heroId = $heroId;
-        $this->itemId = $itemId;
-        $this->itemsType = $itemsType;
+        $this->equipmentId = null;
+        $this->heroId = null;
+        $this->itemId = null;
+        $this->itemsType = null;
     }
 
-    public function hydrate(array $data) {
-        foreach ($data as $key => $value) {
-            $method = 'set' . ucfirst($key);
+    public function hydrate(array $donnees)
+    {
+        foreach ($donnees as $key => $value) {
+            $method = 'set' . str_replace(' ', '', ucwords(str_replace('_', ' ', $key)));
+
             if (method_exists($this, $method)) {
                 $this->$method($value);
             }

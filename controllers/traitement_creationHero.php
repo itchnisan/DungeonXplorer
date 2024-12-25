@@ -32,13 +32,13 @@ function creerClasse($mysqlClient) {
 
     switch($role) {
         case 'guerrier':
-            $role = new Guerrier();
+            $role = new Guerrier($mysqlClient);
             break;
         case 'voleur':
-            $role = new Voleur();
+            $role = new Voleur($mysqlClient);
             break;
         case 'magicien':
-            $role = new Magicien();
+            $role = new Magicien($mysqlClient);
             break;
         default:
             echo "Rôle invalide.";
@@ -47,29 +47,27 @@ function creerClasse($mysqlClient) {
 
     $image = null;
 
-    $hero = new Hero($_SESSION['numero'],$nom,$role->getId(), $image, $biography, $role->getHealth(), $role->getMana(), $role->getStrength(), $role->getInitiative(), 0, 1);
-    $_SESSION['hero'] = $hero;
-
-    //modifier bdd pour qu'elle associe directement des spell ,armes et armures aux classes
-
-    $sql = "INSERT INTO Hero (user_id,hero_name, class_id, hero_image, hero_biography,hero_pv, hero_mana, hero_strength,hero_initiative,hero_armor, primary_weapon, secondary_weapon, shield, spell_list, xp, current_level) 
-    VALUES (:user_id, :nom, :class_id, :image, :biography,:pv, :mana, :strength,:initiative,:armor, :primary_weapon, :secondary_weapon, :shield, :spell_list, :xp, :current_level)";
+    $sql = "INSERT INTO Hero (user_id,hero_id,hero_name, class_id, hero_image, hero_biography,hero_pv, hero_mana, hero_strength,hero_initiative, hero_xp,hero_bourse_or, current_level) 
+    VALUES (:user_id,:hero_id, :nom, :class_id, :image, :biography,:pv, :mana, :strength,:initiative, :xp,:bourseOr, :current_level)";
 
     $cur = preparerRequetePDO($mysqlClient, $sql);
 
-    $userId = $hero->getUserId();
-    $heroName = $hero->getName();
-    $heroClassId = $hero->getClassId();
-    $heroImage = $hero->getImage();
-    $heroBiography = $hero->getBiography();
-    $heroPv = $hero->getPv();
-    $heroMana = $hero->getMana();
-    $heroStrength = $hero->getStrength();
-    $heroInitiative = $hero->getInitiative();
-    $heroXp = $hero->getXp();
-    $heroCurrentLevel = $hero->getCurrentlevel();
+    $userId = $_SESSION['numero'];
+    $hero_id = null;
+    $heroName = $nom;
+    $heroClassId = $role->getClassId();
+    $heroImage = $image;
+    $heroBiography = $biography;
+    $heroPv = $role->getClassBasePv();
+    $heroMana = $role->getClassBaseMana();
+    $heroStrength = $role->getClassStrength();
+    $heroInitiative = $role->getClassInitiative();
+    $heroBourseOr = 0;
+    $heroXp = 0;
+    $heroCurrentLevel = 1;
     
     ajouterParamPDO($cur, ':user_id', $userId);
+    ajouterParamPDO($cur, ':hero_id', $hero_id);
     ajouterParamPDO($cur, ':nom', $heroName);
     ajouterParamPDO($cur, ':class_id', $heroClassId);
     ajouterParamPDO($cur, ':image', $heroImage);
@@ -78,15 +76,24 @@ function creerClasse($mysqlClient) {
     ajouterParamPDO($cur, ':mana', $heroMana);
     ajouterParamPDO($cur, ':strength', $heroStrength);
     ajouterParamPDO($cur, ':initiative', $heroInitiative);
-    ajouterParamPDO($cur, ':armor', $heroArmor);
-    ajouterParamPDO($cur, ':primary_weapon', $heroPrimary);
-    ajouterParamPDO($cur, ':secondary_weapon', $heroSecondary);
-    ajouterParamPDO($cur, ':shield', $heroShield);
-    ajouterParamPDO($cur, ':spell_list', $heroSpellList);
     ajouterParamPDO($cur, ':xp', $heroXp);
+    ajouterParamPDO($cur, ':bourseOr', $heroBourseOr);
     ajouterParamPDO($cur, ':current_level', $heroCurrentLevel);
 
     $res = majDonneesPrepareesPDO($cur);
+
+    $hero = new Hero();
+
+    $id = $_SESSION['numero'];
+
+    $sql = "SELECT * FROM HERO WHERE user_id = :id";
+    $cur = preparerRequetePDO($mysqlClient, $sql);
+    ajouterParamPDO($cur, ':id', $id);
+    $donnee = [];
+    $res = LireDonneesPDOPreparee($cur, $donnee);
+
+    $hero->hydrate($donnee[0]);
+    $_SESSION['hero'] = $hero;
 }
 
 if ($mysqlClient) {

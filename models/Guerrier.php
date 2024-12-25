@@ -2,15 +2,21 @@
 
 // models/Guerrier.php
 
+
 class Guerrier extends Classe
 {
-    public function __construct()
+    public function __construct($mysqlClient)
     {
-        parent::__construct(1,'Guerrier', 'DEMACIA', 100, 0, 5, 15,15);
-    }
+        parent::__construct();
 
-    /*public function attack()
-    {
-        return "{$this->name} vous charge avec sa massue.";
-    }*/
+        $id = 1;
+
+        $sql = "SELECT * FROM CLASS WHERE class_id = :id";
+        $cur = preparerRequetePDO($mysqlClient, $sql);
+        ajouterParamPDO($cur, ':id', $id);
+        $donnee = [];
+        $res = LireDonneesPDOPreparee($cur, $donnee);
+
+        parent::hydrate($donnee[0]);
+    }
 }
