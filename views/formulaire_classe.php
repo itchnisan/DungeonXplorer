@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../views/style.css">
     <title>Choix d'un rôle</title>
 </head>
 <body>
+    <div class="container">
     <h1>Choisissez votre rôle</h1>
-    <form action="../controllers/traitement_creationClasse.php" method="post">
+    <form action="../controllers/traitement_creationClasse.php" method="post" class="text-block">
         <label for="nom">Votre nom : </label><input type="text" id="nom" name="nom" size="32" value=""><br />
         <!--<label for="image">Votre image : </label><input type="image" id="image" name="image" size="64"  AUTOCOMPLETE=OFF> <br />-->
         <label for="biography">Votre histoire : </label><input type="text" id="biography" name="biography" value=""><br />
@@ -21,5 +23,8 @@
         <br><br>
         <button type="submit">Valider</button>
     </form>
+    <h2>Vous avez deja un personnage ?</h2>
+    <button id ="deja">Choisir un ancien personnage</button>
+</div>
 </body>
 </html>

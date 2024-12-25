@@ -7,9 +7,15 @@ include_once "../models/Guerrier.php";
 include_once "../models/Voleur.php";
 include_once "../models/Magicien.php";
 include_once "../models/Hero.php";
+include_once "../views/formulaire_classe.php";
+
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
+    // Redirige vers la page de connexion si non connecté
+    header("Location: ../views/formulaire_connexion.php");
+    exit();
+}
 
 function creerClasse($mysqlClient) {
-
     if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         if (!empty($_POST["nom"]) /*&& !empty($_POST["image"]*/  && !empty($_POST["biography"]))/*)*/ {

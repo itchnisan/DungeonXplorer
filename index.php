@@ -50,7 +50,7 @@
     });
 
     $router->get('/',function() {
-        header('Location: /DungeonXplorer/Chapter/1');
+        header('Location: /DungeonXplorer/views/accueil.php');
     });
 
      // Thunderbirds are go!
