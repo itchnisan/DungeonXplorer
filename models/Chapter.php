@@ -6,6 +6,7 @@ class Chapter
     protected $chapter_nom;
     protected $chapter_content;
     protected $chapter_image;
+    protected $links; // Tableau associatif pour stocker les liens (next_chapter_id et description)
 
     public function __construct()
     {
@@ -13,6 +14,7 @@ class Chapter
         $this->chapter_nom = null;
         $this->chapter_content = null;
         $this->chapter_image = null;
+        $this->links = []; // Initialisation des liens comme tableau vide
     }
 
     // Méthode hydrate
@@ -69,6 +71,17 @@ class Chapter
     public function setChapterImage($chapter_image): self
     {
         $this->chapter_image = $chapter_image;
+        return $this;
+    }
+
+    public function getLinks()
+    {
+        return $this->links;
+    }
+    
+    public function addLink($link): self
+    {
+        $this->links[] = $link;
         return $this;
     }
 }

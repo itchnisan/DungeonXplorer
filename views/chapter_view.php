@@ -21,10 +21,10 @@ require_once 'controllers/ChapterController.php';
         </div>
         <h2>Choisissez votre chemin:</h2>
         <ul>
-            <?php foreach ($chapter->getChoices() as $choice): ?>
+            <?php foreach ($chapter->getLinks()  as $choice): ?>
                 <li>
-                    <a class="button" href="<?php echo htmlspecialchars($choice['chapter']); ?>">
-                        <?php echo htmlspecialchars($choice['text']); ?>
+                    <a class="button" href="<?php echo htmlspecialchars($choice['chapter_id']); ?>">
+                        <?php echo htmlspecialchars($choice['description']); ?>
                     </a>
                 </li>
             <?php endforeach; ?>
