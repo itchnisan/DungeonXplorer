@@ -1,18 +1,34 @@
 <?php
 
-include_once "../models/Classe.php";
 include_once "../models/Hero.php";
+include_once "../models/Monster.php";
 
 class Combat
 {
 
     private $hero;
-    private $monstre;
+    private $monster;
+    private $round;
+    private $isHeroTurn;
+    private $mysqlClient;
 
-    public function __construct()
+    public function __construct($mysqlClient,$hero)
     {
-        $this->hero = null;
-        $this->monstre = null;
+        $this->hero = $hero;
+        $monster = new Monster();
+
+        $id = $hero->getHeroId();
+        $sql = "SELECT monster_id,monster_name,monster_pv,monster_mana,monster_initiative,monster_strength,monster_attack,loot_id,monster_xp FROM MONSTER JOIN ENCOUNTER USING(monster_id) JOIN CHAPTER USING(chapter_id) JOIN QUEST USING(chapter_id) WHERE hero_id = :id";
+        $cur = preparerRequetePDO($mysqlClient, $sql);
+        ajouterParamPDO($cur, ':id', $id);
+        $donnee = [];
+        $res = LireDonneesPDOPreparee($cur, $donnee);
+        $monster->firstMajFromPDO($mysqlClient,$donnee[0]["monster_id"]);
+
+        $this->monster = $monster;
+        $this->round = 1;
+        $this->isHeroTurn = $this->getPriority();
+        $this->mysqlClient = $mysqlClient;
     }
 
      // Méthode hydrate
@@ -50,13 +66,21 @@ class Combat
         return $this;
     }
 
+    public function getRound(){
+        return $this->round;
+    }
 
-function getPriorite() {
+    public function getIsHeroTurn(){
+        return $this->isHeroTurn;
+    }
+
+
+public function getPriority() {
 
     $deHero = rand(1,6);
     $deAdversaire = rand(1,6);
 
-    if($this->hero->getInitiave()+$deHero > $this->monster->getInitiative() +$deAdversaire || ($this->hero->getInitiave()+$deHero == $this->monster->getInitiative()+$deAdversaire && $this->hero->getClassId() == 2)) {
+    if($this->hero->getHeroInitiative()+$deHero > $this->monster->getMonsterInitiative() +$deAdversaire || ($this->hero->getHeroInitiative()+$deHero == $this->monster->getMonsterInitiative()+$deAdversaire && $this->hero->getClassId() == 2)) {
         return true;
     }
 
@@ -66,55 +90,33 @@ function getPriorite() {
     }
 }
 
-function doAttaquePhysique($attaquant,$defenseur) {
-
-    $deAttaque = rand(1,6);
-    $deDefenseur = rand(1,6);
-    $bonus_arme = 0;
-    $bonus_armure = 0;
-
-    if($attaquant instanceof Hero) {
-        //$bonus_arme 
-        // augmenter bonus_arme grace aux armes de hero.
-        $id = $attaquant->getHeroId();
-        $id_type = 1;
-        $sql = "SELECT ITEMS_ATTACK FROM ITEMS JOIN TYPEEQUIPMENT USING(ITEMS_ID) JOIN EQUIPMENT USING(ITEMS_ID) WHERE hero_id = :id and TYPEEQUIPMENT_TYPE = :id_type";
-                        $cur = preparerRequetePDO($mysqlClient, $sql);
-                        ajouterParamPDO($cur, ':id', $id);
-                        ajouterParamPDO($cur, ':id_type', $id_type);
-                        $donnee = [];
-                        $res2 = LireDonneesPDOPreparee($cur, $donnee);
-
-                        if($res2 > 0) {
-                            $bonus_arme = $donnee[0]["items_attack"];
-                        }
-    }
-
-    if($defenseur instanceof Hero) {
-        //$bonus_armure 
-        // augmenter bonus_armure grace aux armure de hero.
-        $id = $defenseur->getHeroId();
-        $id_type = 2;
-        $sql = "SELECT ITEMS_PROTECTION FROM ITEMS JOIN TYPEEQUIPMENT USING(ITEMS_ID) JOIN EQUIPMENT USING(ITEMS_ID) WHERE hero_id = :id and TYPEEQUIPMENT_TYPE = :id_type";
-                        $cur = preparerRequetePDO($mysqlClient, $sql);
-                        ajouterParamPDO($cur, ':id', $id);
-                        ajouterParamPDO($cur, ':id_type', $id_type);
-                        $donnee = [];
-                        $res2 = LireDonneesPDOPreparee($cur, $donnee);
-
-                        if($res2 > 0) {
-                            $bonus_armure = $donnee[0]["items_protection"];
-                        }
-    }
-
-    if($defenseur instanceof Voleur) {
-        $diff = max(0,($attaquant->getStrength() + $bonus_arme + $deAttaque) - ($defenseur->getInitiative()/2 + $bonus_armure + $deDefenseur));
+public function performPhysicalAttack() {
+    if($this->isHeroTurn) {
+        $this->monster->takeDamage($mysqlClient,$this->hero->getPhysicDamage());
     }
     else {
-    $diff = max(0,($attaquant->getStrength() + $bonus_arme + $deAttaque) - ($defenseur->getStrength()/2 + $bonus_armure + $deDefenseur));
+        $this->hero->takeDamage($this->mysqlClient,$this->monster->getPhysicDamage());
     }
-    
-    $defenseur = $diff;
+    $this->isHeroTurn = !$this->isHeroTurn;
+    $this->round += 1;
 }
+
+public function performMagicalAttack($spell_id) {
+    if($this->isHeroTurn) {
+        $this->monster->takeDamage($this->hero->getMagicDamage($spell_id));
+    }
+    else {
+        $this->hero->takeDamage($this->monster->getMagicDamage($spell_id));
+    }
+    $this->isHeroTurn = !$this->isHeroTurn;
+    $this->round += 1;
+}
+
+public function consumePotion($items_id) {
+    $this->hero->consumeAPotion($items_id);
+    $this->isHeroTurn = !$this->isHeroTurn;
+    $this->round += 1;
+}
+
 }
 ?>

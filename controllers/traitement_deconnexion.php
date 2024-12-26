@@ -14,8 +14,6 @@ session_start();
 		unset($_SESSION['numero']);
 		unset($_SESSION['courriel']);
 		unset($_SESSION['hero']);
-		unset($_SESSION['spellList']);
-		unset($_SESSION['equipments']);
 		$_SESSION['loggedin'] = false;
 	}
 ?>

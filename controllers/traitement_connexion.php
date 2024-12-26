@@ -18,8 +18,7 @@ $_SESSION['loggedin'] = false;
 $_SESSION['numero'] = null;
 $_SESSION['courriel'] = null;
 $_SESSION['hero'] = new Hero();
-$_SESSION['spellList'] = new SpellList();
-$_SESSION['equipment'] = new Equipment();
+
 
 
 function connexion($mysqlClient)
@@ -90,33 +89,9 @@ function connexion($mysqlClient)
                     $res = LireDonneesPDOPreparee($cur, $donnee);
                     if ($res > 0) {
                         $_SESSION['hero']->hydrate($donnee[0]);
-
-                        $id = $_SESSION['hero']->getHeroId();
-
-                        $sql = "SELECT * FROM SPELLLIST WHERE hero_id = :id";
-                        $cur = preparerRequetePDO($mysqlClient, $sql);
-                        ajouterParamPDO($cur, ':id', $id);
-                        $donnee = [];
-                        $res2 = LireDonneesPDOPreparee($cur, $donnee);
-
-                        if($res2 > 0) {
-                            $_SESSION['spellList']->hydrate($donnee[0]);
-                        }
-                        $sql = "SELECT * FROM EQUIPMENT WHERE hero_id = :id";
-                        $cur = preparerRequetePDO($mysqlClient, $sql);
-                        ajouterParamPDO($cur, ':id', $id);
-                        $donnee = [];
-                        $res2 = LireDonneesPDOPreparee($cur, $donnee);
-
-                        if($res2 > 0) {
-                            $_SESSION['equipment']->hydrate($donnee[0]);
-                        }
                     }
 
             var_dump($_SESSION['hero']);
-            var_dump($_SESSION['spellList']);
-            var_dump($_SESSION['equipment']);
-
             break;
 
         case 1:

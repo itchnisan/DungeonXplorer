@@ -85,14 +85,7 @@ function creerClasse($mysqlClient) {
     $hero = new Hero();
 
     $id = $_SESSION['numero'];
-
-    $sql = "SELECT * FROM HERO WHERE user_id = :id";
-    $cur = preparerRequetePDO($mysqlClient, $sql);
-    ajouterParamPDO($cur, ':id', $id);
-    $donnee = [];
-    $res = LireDonneesPDOPreparee($cur, $donnee);
-
-    $hero->hydrate($donnee[0]);
+    $hero->firstMajFromPDO($id);
     $_SESSION['hero'] = $hero;
 }
 
