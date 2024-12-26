@@ -53,7 +53,7 @@ function creerClasse($mysqlClient) {
 
     $image = null;
 
-    $hero = new Hero($_SESSION['numero'],$nom,$role->getId(), $image, $biography, $role->getHealth(), $role->getMana(), $role->getStrength(), $role->getInitiative(), 0, 1);
+    $hero = new Hero($_SESSION['numero'],$nom,$role->getId(), $image, $biography, $role->getHealth(), $role->getMana(), $role->getStrength(), $role->getInitiative(),0, 0, 1);
     $_SESSION['hero'] = $hero;
 
     //modifier bdd pour qu'elle associe directement des spell ,armes et armures aux classes

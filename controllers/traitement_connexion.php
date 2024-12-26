@@ -31,7 +31,7 @@ function connexion($mysqlClient)
     }
 
     if ($erreur == 0) {
-        $sql = "SELECT user_mdp FROM USER WHERE user_mail = :courriel";
+        $sql = "SELECT * FROM USER WHERE user_mail = :courriel";
         $cur = preparerRequetePDO($mysqlClient, $sql);
         ajouterParamPDO($cur, ':courriel', $courriel, 'texte');
         $donnee = [];
@@ -48,7 +48,7 @@ function connexion($mysqlClient)
                     $_SESSION['courriel'] = $courriel;
                     echo $courriel;
                     echo $_SESSION['courriel'];
-
+                    /*
                     $sql = "SELECT hero_id FROM USER WHERE user_mail = :courriel";
                     $cur = preparerRequetePDO($mysqlClient, $sql);
                     ajouterParamPDO($cur, ':courriel', $courriel, 'texte');
@@ -57,6 +57,9 @@ function connexion($mysqlClient)
                     if ($res > 0) {
                         $_SESSION['numero'] = $donnee[0]["hero_id"];
                     }
+                    */
+                    
+                    $_SESSION['numero'] = $donnee[0]['user_id'];
 
                     // Check if user is an admin (if needed)
                     /* $sql = "SELECT admin_id FROM ADMINS WHERE user_mail = :courriel";
@@ -80,6 +83,9 @@ function connexion($mysqlClient)
             echo $_SESSION['isAdmin'];
             echo $_SESSION['numero'];
             echo $_SESSION['courriel'];
+            echo $_SESSION['numero'];
+            //redirection vers page acceuil
+            header("Location: ../views/formulaire_classe.php");
             break;
 
         case 1:
