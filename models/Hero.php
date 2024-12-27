@@ -20,21 +20,23 @@ class Hero
     protected $current_level;
 
     // Constructeur : Initialise les attributs à null par défaut.
-    public function __construct()
+    public function __construct($userId, $name,$class_id, $image, $biography, $pv, $mana, $strength, $initiative, $bourse, $xp, $currentLevel)
     {
-        $this->hero_id = null;
-        $this->user_id = null;
-        $this->hero_name = null;
-        $this->class_id = null;
-        $this->hero_image = null;
-        $this->hero_biography = null;
-        $this->hero_pv = null;
-        $this->hero_mana = null;
-        $this->hero_strength = null;
-        $this->hero_initiative = null;
-        $this->hero_bourse = null;
-        $this->hero_xp = null;
-        $this->current_level = null;
+        
+        $this->user_id = $userId;
+        $this->hero_name = $name;
+        $this->class_id = $class_id;
+        $this->hero_image = $image;
+        $this->hero_biography = $biography;
+        $this->hero_pv = $pv;
+        $this->hero_mana = $mana;
+        $this->hero_strength = $strength;
+        $this->hero_initiative = $initiative;
+        $this->hero_bourse = $bourse;
+        $this->hero_xp = $xp;
+        $this->currentLevel = $currentLevel;
+
+        
     }
 
     // Méthode hydrate

@@ -38,13 +38,13 @@ function creerClasse($mysqlClient) {
 
     switch($role) {
         case 'guerrier':
-            $role = new Guerrier();
+            $role = new Guerrier($mysqlClient);
             break;
         case 'voleur':
-            $role = new Voleur();
+            $role = new Voleur($mysqlClient);
             break;
         case 'magicien':
-            $role = new Magicien();
+            $role = new Magicien($mysqlClient);
             break;
         default:
             echo "Rôle invalide.";
@@ -52,8 +52,9 @@ function creerClasse($mysqlClient) {
     }
 
     $image = null;
-
-    $hero = new Hero($_SESSION['numero'],$nom,$role->getId(), $image, $biography, $role->getHealth(), $role->getMana(), $role->getStrength(), $role->getInitiative(),0, 0, 1);
+    
+    $hero = new Hero($_SESSION['numero'],$nom,$role->getClassId(), $image, $biography, $role->getClassBasePv(), $role->getClassBaseMana(), $role->getClassStrength(), $role->getClassInitiative(),0, 0, 1);
+    
     $_SESSION['hero'] = $hero;
 
     //modifier bdd pour qu'elle associe directement des spell ,armes et armures aux classes
@@ -68,15 +69,15 @@ function creerClasse($mysqlClient) {
     $cur = preparerRequetePDO($mysqlClient, $sql);
 
     $userId = $hero->getUserId();
-    $heroName = $hero->getName();
+    $heroName = $hero->getHeroName();
     $heroClassId = $hero->getClassId();
-    $heroImage = $hero->getImage();
-    $heroBiography = $hero->getBiography();
-    $heroPv = $hero->getPv();
-    $heroMana = $hero->getMana();
-    $heroStrength = $hero->getStrength();
-    $heroInitiative = $hero->getInitiative();
-    $heroXp = $hero->getXp();
+    $heroImage = $hero->getHeroImage();
+    $heroBiography = $hero->getHeroBiography();
+    $heroPv = $hero->getHeroPv();
+    $heroMana = $hero->getHeroMana();
+    $heroStrength = $hero->getHeroStrength();
+    $heroInitiative = $hero->getHeroInitiative();
+    $heroXp = $hero->getHeroXp();
     $heroCurrentLevel = $hero->getCurrentlevel();
     
     ajouterParamPDO($cur, ':user_id', $userId);
