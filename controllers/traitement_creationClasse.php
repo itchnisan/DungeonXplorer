@@ -99,6 +99,31 @@ function creerClasse($mysqlClient) {
 
     $res = majDonneesPrepareesPDO($cur);
 
+
+    /********************************Recuperation du hero id dans la bdd pour le rajouter dans notre class Hero************************************/
+
+    $sqlHero = "SELECT hero_id FROM hero WHERE user_id = :userID and hero_name = :heroNAME";
+
+    $cur = preparerRequetePDO($mysqlClient, $sqlHero);
+    ajouterParamPDO($cur, ':userID', $userId, 'texte');
+    ajouterParamPDO($cur, ':heroNAME', $heroName, 'texte');
+    $donneeHero = [];
+    $res = LireDonneesPDOPreparee($cur, $donneeHero);
+
+    $hero->setHeroId($donneeHero[0]["hero_id"]);
+
+
+
+    /************************Insertion de notre hero dans quest**********************************/
+
+    $sqlQuest = "INSERT INTO quest (hero_id,chapter_id) 
+    VALUES (:heroID, 1)";
+
+
+    $curQuest = preparerRequetePDO($mysqlClient, $sqlQuest);
+    ajouterParamPDO($curQuest, ':heroID', $donneeHero[0]["hero_id"]);
+    $resQuest = majDonneesPrepareesPDO($curQuest);
+
     header("Location: ../Chapter/1");
 }
 

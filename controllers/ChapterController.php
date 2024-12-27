@@ -31,7 +31,7 @@ class ChapterController
             if ($result) { // Si un résultat existe, alors il y a un combat
                 $chapter->addLink([
                     'description' => 'LE COMBATRE',
-                    'chapter_id' => ''      //Metre ici la page vers le combat
+                    'chapter_id' => '../views/combat_view.php'      //Metre ici la page vers le combat
                 ]);
             }else {
                 // Préparer la requête pour récupérer les liens
@@ -70,6 +70,7 @@ class ChapterController
     public function show($id)
     {
         $chapter = $this->getChapter($id);
+        
 
         if ($chapter) {
             include 'views/chapter_view.php'; // Charge la vue pour le chapitre

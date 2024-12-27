@@ -20,11 +20,18 @@ class Combat
         $monster = new Monster();
 
         $id = $hero->getHeroId();
-        $sql = "SELECT monster_id,monster_name,monster_pv,monster_mana,monster_initiative,monster_strength,monster_attack,monster_xp FROM MONSTER JOIN ENCOUNTER USING(monster_id) JOIN CHAPTER USING(chapter_id) JOIN QUEST USING(chapter_id) WHERE hero_id = :id";
+        
+        $sql = "select monster_id,monster_name,monster_pv,monster_mana,monster_initiative,monster_strength,monster_attack,monster_xp from quest
+                JOIN encounter USING (chapter_id)
+                JOIN monster USING (monster_id)
+                where hero_id = :id";
+
         $cur = preparerRequetePDO($mysqlClient, $sql);
         ajouterParamPDO($cur, ':id', $id);
         $donnee = [];
         $res = LireDonneesPDOPreparee($cur, $donnee);
+        
+        var_dump($donnee);
         $monster->firstMajFromPDO($mysqlClient,$donnee[0]["monster_id"]);
 
         $this->monster = $monster;
