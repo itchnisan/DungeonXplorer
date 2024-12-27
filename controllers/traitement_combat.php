@@ -59,6 +59,7 @@ while ($combat->getHero()->getHeroPv() > 0 && $combat->getMonster()->getMonsterP
         ajouterParamPDO($curLinks, ':chapitreActu', $_SESSION['chapitre'], 'texte');
         $donneeChap = [];
         $res = LireDonneesPDOPreparee($curLinks, $donneeChap);
+        
         echo "<form action='../Chapter/" . $donneeChap[0]['next_chapter_id'] . "' method='get'>
             <button type='submit'>Bravo continuer l'aventure </button>
             </form>";

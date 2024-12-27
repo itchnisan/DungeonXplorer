@@ -81,8 +81,21 @@ class ChapterController
 
     public function show($id)
     {
+
+        $_SESSION['chapitre'] = $id;
         $chapter = $this->getChapter($id);
         $db = OuvrirConnexionPDO('mysql:host=localhost;dbname=dx_10;charset=utf8', 'root', '');
+
+
+        $hero = $_SESSION['hero'];
+        $idUser = $hero->getHeroId();
+        $sqlUp = "UPDATE quest SET chapter_id = :chapID WHERE hero_id = :id";
+        $cur = preparerRequetePDO($db, $sqlUp);
+
+        ajouterParamPDO($cur, ':chapID', $id,'nombre');
+        ajouterParamPDO($cur, ':id', $idUser,'nombre');
+        $donnee = [];
+        $res1 = $cur->execute();
 
         if ($chapter) {
             // Récupération de l'inventaire pour la vue
