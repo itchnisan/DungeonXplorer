@@ -1,10 +1,12 @@
 <?php
 // Inclusion des classes nécessaires
+include_once "../ref.php";
 include_once "../models/connexionPDO.php";
 include_once "../models/Hero.php";
 include_once "../models/Monster.php";
 include_once "../models/Combat.php";
 session_start();
+
 
 // Initialiser le combat
 $combat = new Combat($mysqlClient, $_SESSION['hero']);
@@ -33,11 +35,35 @@ while ($combat->getHero()->getHeroPv() > 0 && $combat->getMonster()->getMonsterP
     // Vérification des points de vie pour terminer le combat
     if ($combat->getHero()->getHeroPv() <= 0) {
         echo "<p>Le héros a été vaincu.</p>";
+
+        //verification vers quelle chapitre le hero doit etre envoyer  si il perd
+        $sqllinks = "SELECT next_chapter_id FROM links WHERE chapter_id = :chapitreActu and description = 'loos'";
+        $curLinks = preparerRequetePDO($mysqlClient, $sqllinks);
+        ajouterParamPDO($curLinks, ':chapitreActu', $_SESSION['chapitre'], 'texte');
+        $donneeChap = [];
+        $res = LireDonneesPDOPreparee($curLinks, $donneeChap);
+
+        
+        echo "<form action='../Chapter/" . $donneeChap[0]['next_chapter_id'] . "' method='get'>
+            <button type='submit'>Dommage </button>
+            </form>";
+
         break;
     }
 
     if ($combat->getMonster()->getMonsterPv() <= 0) {
-        echo "<p>Le monstre a été vaincu.</p>";
+
+        //verification vers quelle chapitre le hero doit etre envoyer  si il gagne
+        $sqllinks = "SELECT next_chapter_id FROM links WHERE chapter_id = :chapitreActu and description = 'win'";
+        $curLinks = preparerRequetePDO($mysqlClient, $sqllinks);
+        ajouterParamPDO($curLinks, ':chapitreActu', $_SESSION['chapitre'], 'texte');
+        $donneeChap = [];
+        $res = LireDonneesPDOPreparee($curLinks, $donneeChap);
+        echo "<form action='../Chapter/" . $donneeChap[0]['next_chapter_id'] . "' method='get'>
+            <button type='submit'>Bravo continuer l'aventure </button>
+            </form>";
+
+
         break;
     }
 
@@ -50,4 +76,5 @@ while ($combat->getHero()->getHeroPv() > 0 && $combat->getMonster()->getMonsterP
 
 // Afficher le résultat final
 echo "<p>Le combat est terminé !</p>";
+
 ?>

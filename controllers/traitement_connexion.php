@@ -1,4 +1,5 @@
 <?php
+include_once "../index.php";
 session_start();
 
 function afficherObj($obj)

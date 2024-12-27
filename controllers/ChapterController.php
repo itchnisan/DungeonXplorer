@@ -8,6 +8,12 @@ include_once 'models/connexionPDO.php';
 session_start();
 
 // controllers/ChapterController.php
+
+require_once 'models/Chapter.php';
+include_once "models/connexionPDO.php";
+
+//require_once 'views/chapter_view.php';
+
 class ChapterController
 {
     private $chapters = [];
@@ -63,37 +69,21 @@ class ChapterController
     // Nouveau : récupération de l'inventaire d'un héros
     public function getHeroInventory($heroId, $db)
     {
-        $stmt = $db->prepare("
-            SELECT inventory.*, items.items_name, items.items_description, items.items_size, items.items_efficiency
-            FROM inventory
-            JOIN items ON inventory.items_id = items.items_id
-            WHERE inventory.hero_id = :hero_id
-        ");
-        $stmt->execute(['hero_id' => $heroId]);
+        
+        //A changer si le temps
+        $chapt = $this->getChaptersFromDatabase(OuvrirConnexionPDO('mysql:host=localhost;dbname=dx_10;charset=utf8', 'root' , ''));
 
-        $inventory = [];
-
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $item = [
-                'item_id' => $row['items_id'],
-                'name' => $row['items_name'],
-                'description' => $row['items_description'],
-                'size' => $row['items_size'],
-                'efficiency' => $row['items_efficiency'],
-                'amount' => $row['items_amount'],
-            ];
-            $inventory[] = $item;
+        foreach ($chapt as $chapter) {
+            $this->chapters= $chapt;
         }
-
-        $this->heroInventory = $inventory; // Stockage de l'inventaire
-        return $inventory;
     }
+    
 
-    // Chargement de la vue chapitre avec inventaire
     public function show($id)
     {
-        $db = OuvrirConnexionPDO('mysql:host=localhost;dbname=dx_10;charset=utf8', 'root', '');
         $chapter = $this->getChapter($id);
+        
+
         if ($chapter) {
             // Récupération de l'inventaire pour la vue
                 $hero =$_SESSION['hero'];

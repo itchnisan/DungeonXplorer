@@ -1,8 +1,8 @@
 <?php
 session_start();
-
-include_once "../models/connexionPDO.php";
-include_once "../models/Hero.php";
+include_once "../ref.php";
+include_once ROOT . "/models/connexionPDO.php";
+include_once ROOT . "/models/Hero.php";
 
 function getPersoFromDatabase($db) {
     if (!isset($_SESSION['numero'])) {
