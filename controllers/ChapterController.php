@@ -1,81 +1,105 @@
 <?php
+require_once 'models/Hero.php';
+require_once 'models/Chapter.php';
+require_once 'models/Inventory.php';
+require_once 'models/Items.php';
+include_once 'models/connexionPDO.php';
+
+session_start();
 
 // controllers/ChapterController.php
-
-require_once 'models/Chapter.php';
-include_once "models/connexionPDO.php";
-
-//require_once 'views/chapter_view.php';
-
 class ChapterController
 {
     private $chapters = [];
+    private $heroInventory = []; // Nouveau : stockage de l'inventaire du héros
 
-    public function getChaptersFromDatabase($db) {
+    public function __construct()
+    {
+        // Chargement des chapitres
+        $this->chapters = $this->getChaptersFromDatabase(
+            OuvrirConnexionPDO('mysql:host=localhost;dbname=dx_10;charset=utf8', 'root', '')
+        );
+    }
+
+    // Récupération des chapitres
+    public function getChaptersFromDatabase($db)
+    {
         $query = $db->query("SELECT * FROM chapter");
-        $chapters = array();
+        $chapters = [];
 
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $chapter = new Chapter();
             $chapter->hydrate($row);
 
-            
-            
-            //verification que le chapitre contient ou non un combat
+            // Vérification combat
             $sqlCombat = $db->prepare("SELECT monster_id FROM encounter WHERE chapter_id = :chapter_id");
             $sqlCombat->execute(['chapter_id' => $chapter->getChapterId()]);
-            // Récupération du résultat
-            $result = $sqlCombat->fetch(PDO::FETCH_ASSOC); // Récupère une ligne sous forme de tableau associatif
+            $result = $sqlCombat->fetch(PDO::FETCH_ASSOC);
 
-            // Vérifiez si un résultat a été trouvé
-            if ($result) { // Si un résultat existe, alors il y a un combat
+            if ($result) {
                 $chapter->addLink([
-                    'description' => 'LE COMBATRE',
-                    'chapter_id' => '../views/combat_view.php'      //Metre ici la page vers le combat
+                    'description' => 'LE COMBAT',
+                    'chapter_id' => '../views/combat_view.php',
                 ]);
-            }else {
-                // Préparer la requête pour récupérer les liens
+            } else {
+                // Récupération des liens
                 $stmt = $db->prepare("SELECT links.* FROM links WHERE chapter_id = :chapter_id");
                 $stmt->execute(['chapter_id' => $chapter->getChapterId()]);
-                
-                // Ajouter les informations des liens au chapitre
+
                 while ($link = $stmt->fetch(PDO::FETCH_ASSOC)) {
                     $chapter->addLink([
                         'description' => $link['description'],
-                        'chapter_id' => $link['next_chapter_id']
+                        'chapter_id' => $link['next_chapter_id'],
                     ]);
                 }
             }
 
-            
-
-            array_push($chapters, $chapter);
+            $chapters[] = $chapter;
         }
 
         return $chapters;
     }
 
-    public function __construct()
+    // Nouveau : récupération de l'inventaire d'un héros
+    public function getHeroInventory($heroId, $db)
     {
-        
-        //A changer si le temps
-        $chapt = $this->getChaptersFromDatabase(OuvrirConnexionPDO('mysql:host=localhost;dbname=dx_10;charset=utf8', 'root' , ''));
+        $stmt = $db->prepare("
+            SELECT inventory.*, items.items_name, items.items_description, items.items_size, items.items_efficiency
+            FROM inventory
+            JOIN items ON inventory.items_id = items.items_id
+            WHERE inventory.hero_id = :hero_id
+        ");
+        $stmt->execute(['hero_id' => $heroId]);
 
-        foreach ($chapt as $chapter) {
-            $this->chapters= $chapt;
+        $inventory = [];
+
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $item = [
+                'item_id' => $row['items_id'],
+                'name' => $row['items_name'],
+                'description' => $row['items_description'],
+                'size' => $row['items_size'],
+                'efficiency' => $row['items_efficiency'],
+                'amount' => $row['items_amount'],
+            ];
+            $inventory[] = $item;
         }
-    }
-    
 
+        $this->heroInventory = $inventory; // Stockage de l'inventaire
+        return $inventory;
+    }
+
+    // Chargement de la vue chapitre avec inventaire
     public function show($id)
     {
+        $db = OuvrirConnexionPDO('mysql:host=localhost;dbname=dx_10;charset=utf8', 'root', '');
         $chapter = $this->getChapter($id);
-        
-
         if ($chapter) {
+            // Récupération de l'inventaire pour la vue
+                $hero =$_SESSION['hero'];
+                $heroInventory = $this->getHeroInventory($hero->getHeroId(), $db);
             include 'views/chapter_view.php'; // Charge la vue pour le chapitre
         } else {
-            // Si le chapitre n'existe pas, redirige vers un chapitre par défaut ou affiche une erreur
             header('HTTP/1.0 404 Not Found');
             echo "Chapitre non trouvé!";
         }
@@ -85,10 +109,9 @@ class ChapterController
     {
         foreach ($this->chapters as $chapter) {
             if ($chapter->getChapterId() == $id) {
-                //echo($chapter->getChapterId());
                 return $chapter;
             }
         }
-        return null; // Chapitre non trouvé
+        return null;
     }
 }

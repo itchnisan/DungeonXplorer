@@ -1,6 +1,5 @@
 <?php
 
-// models/Magicien.php
 
 class Magicien extends Classe
 {

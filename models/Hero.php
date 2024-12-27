@@ -1,6 +1,6 @@
 <?php
 
-include_once "../models/connexionPDO.php";
+include_once __DIR__ . '/connexionPDO.php';
 
 //Attributs de la class
 class Hero
@@ -34,11 +34,11 @@ class Hero
         $this->hero_initiative = $initiative;
         $this->hero_bourse = $bourse;
         $this->hero_xp = $xp;
-        $this->currentLevel = $currentLevel;
+        $this->current_level = $currentLevel;
 
         
     }
-    
+
     // Méthode hydrate
     // Méthode permettant de remplir les attributs de l'objet à partir d'un tableau associatif.
     public function hydrate(array $donnees)
