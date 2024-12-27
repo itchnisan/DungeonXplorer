@@ -19,17 +19,35 @@ class ChapterController
             $chapter = new Chapter();
             $chapter->hydrate($row);
 
-            // Préparer la requête pour récupérer les liens
-            $stmt = $db->prepare("SELECT links.* FROM links WHERE chapter_id = :chapter_id");
-            $stmt->execute(['chapter_id' => $chapter->getChapterId()]);
+            
+            
+            //verification que le chapitre contient ou non un combat
+            $sqlCombat = $db->prepare("SELECT monster_id FROM encounter WHERE chapter_id = :chapter_id");
+            $sqlCombat->execute(['chapter_id' => $chapter->getChapterId()]);
+            // Récupération du résultat
+            $result = $sqlCombat->fetch(PDO::FETCH_ASSOC); // Récupère une ligne sous forme de tableau associatif
 
-            // Ajouter les informations des liens au chapitre
-            while ($link = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            // Vérifiez si un résultat a été trouvé
+            if ($result) { // Si un résultat existe, alors il y a un combat
                 $chapter->addLink([
-                    'description' => $link['description'],
-                    'chapter_id' => $link['next_chapter_id']
+                    'description' => 'LE COMBATRE',
+                    'chapter_id' => ''      //Metre ici la page vers le combat
                 ]);
+            }else {
+                // Préparer la requête pour récupérer les liens
+                $stmt = $db->prepare("SELECT links.* FROM links WHERE chapter_id = :chapter_id");
+                $stmt->execute(['chapter_id' => $chapter->getChapterId()]);
+                
+                // Ajouter les informations des liens au chapitre
+                while ($link = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $chapter->addLink([
+                        'description' => $link['description'],
+                        'chapter_id' => $link['next_chapter_id']
+                    ]);
+                }
             }
+
+            
 
             array_push($chapters, $chapter);
         }
@@ -40,7 +58,7 @@ class ChapterController
     public function __construct()
     {
         
-
+        //A changer si le temps
         $chapt = $this->getChaptersFromDatabase(OuvrirConnexionPDO('mysql:host=localhost;dbname=dx_10;charset=utf8', 'root' , ''));
 
         foreach ($chapt as $chapter) {
