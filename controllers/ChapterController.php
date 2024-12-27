@@ -1,17 +1,16 @@
 <?php
-require_once 'models/Hero.php';
-require_once 'models/Treasure.php';
-require_once 'models/Chapter.php';
-require_once 'models/Inventory.php';
-require_once 'models/Items.php';
-include_once 'models/connexionPDO.php';
+
+require_once ROOT . '/models/Hero.php';
+require_once ROOT . '/models/Treasure.php';
+require_once ROOT . '/models/Chapter.php';
+require_once ROOT . '/models/Inventory.php';
+require_once ROOT . '/models/Items.php';
+include_once ROOT . '/models/connexionPDO.php';
 
 session_start();
 
 // controllers/ChapterController.php
 
-require_once 'models/Chapter.php';
-include_once "models/connexionPDO.php";
 
 //require_once 'views/chapter_view.php';
 
@@ -101,7 +100,7 @@ class ChapterController
 
     public function show($id)
     {
-
+        
         $_SESSION['chapitre'] = $id;
         $chapter = $this->getChapter($id);
         $db = OuvrirConnexionPDO('mysql:host=localhost;dbname=dx_10;charset=utf8', 'root', '');
