@@ -3,6 +3,7 @@
 include_once "../models/Hero.php";
 include_once "../models/Monster.php";
 
+//Attributs de la classe
 class Combat
 {
 
@@ -12,13 +13,14 @@ class Combat
     private $isHeroTurn;
     private $mysqlClient;
 
+    //Constructeur de la classe qui prend en parametre un hero.
     public function __construct($mysqlClient,$hero)
     {
         $this->hero = $hero;
         $monster = new Monster();
 
         $id = $hero->getHeroId();
-        $sql = "SELECT monster_id,monster_name,monster_pv,monster_mana,monster_initiative,monster_strength,monster_attack,loot_id,monster_xp FROM MONSTER JOIN ENCOUNTER USING(monster_id) JOIN CHAPTER USING(chapter_id) JOIN QUEST USING(chapter_id) WHERE hero_id = :id";
+        $sql = "SELECT monster_id,monster_name,monster_pv,monster_mana,monster_initiative,monster_strength,monster_attack,monster_xp FROM MONSTER JOIN ENCOUNTER USING(monster_id) JOIN CHAPTER USING(chapter_id) JOIN QUEST USING(chapter_id) WHERE hero_id = :id";
         $cur = preparerRequetePDO($mysqlClient, $sql);
         ajouterParamPDO($cur, ':id', $id);
         $donnee = [];
@@ -30,18 +32,6 @@ class Combat
         $this->isHeroTurn = $this->getPriority();
         $this->mysqlClient = $mysqlClient;
     }
-
-     // Méthode hydrate
-     public function hydrate(array $donnees)
-     {
-         foreach ($donnees as $key => $value) {
-             $method = 'set' . str_replace(' ', '', ucwords(str_replace('_', ' ', $key)));
- 
-             if (method_exists($this, $method)) {
-                 $this->$method($value);
-             }
-         }
-     }
 
       // Getters et Setters
     public function getHero()
@@ -66,6 +56,12 @@ class Combat
         return $this;
     }
 
+    public function setRound($number): self
+    {
+        $this->round = $number;
+        return $this;
+    }
+
     public function getRound(){
         return $this->round;
     }
@@ -74,7 +70,15 @@ class Combat
         return $this->isHeroTurn;
     }
 
+    public function setIsHeroTurn($bool): self
+    {
+        $this->isHeroTurn = $bool;
+        return $this;
+    }
 
+
+//Fonction permettant de savoir qui a la priorite au debut du combat grâce aux calculs donnés par le sujet
+//renvoie true si c'est le hero qui a la priorite, false sinon
 public function getPriority() {
 
     $deHero = rand(1,6);
@@ -90,33 +94,31 @@ public function getPriority() {
     }
 }
 
-public function performPhysicalAttack() {
-    if($this->isHeroTurn) {
-        $this->monster->takeDamage($mysqlClient,$this->hero->getPhysicDamage());
+//Fonction permettant d'effectuer une attaque physique
+//utilise les fonctions des classes hero et monstre
+public function performPhysicalAttack($mysqlClient) {
+    if ($this->isHeroTurn) { // si c'est le tour du hero c'est le monstre qui subit les damage
+        $this->monster->takeDamage($mysqlClient, $this->hero->getPhysicDamage($mysqlClient));
+    } else { //c'est le hero sinon.
+        $this->hero->takeDamage($this->mysqlClient, $this->monster->getPhysicDamage($mysqlClient));
     }
-    else {
-        $this->hero->takeDamage($this->mysqlClient,$this->monster->getPhysicDamage());
-    }
-    $this->isHeroTurn = !$this->isHeroTurn;
-    $this->round += 1;
 }
 
-public function performMagicalAttack($spell_id) {
-    if($this->isHeroTurn) {
-        $this->monster->takeDamage($this->hero->getMagicDamage($spell_id));
+//Fonction permettant d'effectuer une attaque physique
+//utilise les fonctions des classes hero et monstre
+public function performMagicalAttack($mysqlClient, $spell_id) {
+    if ($this->isHeroTurn) {
+        $this->monster->takeDamage($this->hero->getMagicDamage($mysqlClient, $spell_id));
+    } else { // c'est le hero sinon.
+        $this->hero->takeDamage($this->monster->getMagicDamage($mysqlClient, $spell_id));
     }
-    else {
-        $this->hero->takeDamage($this->monster->getMagicDamage($spell_id));
-    }
-    $this->isHeroTurn = !$this->isHeroTurn;
-    $this->round += 1;
 }
 
-public function consumePotion($items_id) {
-    $this->hero->consumeAPotion($items_id);
-    $this->isHeroTurn = !$this->isHeroTurn;
-    $this->round += 1;
+//Fonction permettant d'effectuer la consommation d'une potion.
+public function consumePotion($mysqlClient, $items_id) {
+    $this->hero->consumeAPotion($mysqlClient, $items_id);
 }
+
 
 }
 ?>
