@@ -1,5 +1,7 @@
 <?php
 
+define('ROOT', __DIR__);
+
     // Include the Router class
     // @note: it's recommended to just use the composer autoloader when working with other packages too
     require_once __DIR__ . '/Router/Router.php';
@@ -38,6 +40,9 @@
 
     // Static route: / (homepage)
     $router->get('/Chapter/(\d+)', 'ChapterController@show');
+    $router->get('/views/combat_view', function() {
+        echo "la";
+    });
 
     // Static route: /hello
     $router->get('/hello', function () {

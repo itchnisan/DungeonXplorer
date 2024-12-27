@@ -1,6 +1,6 @@
 <?php
 
-include_once "../models/connexionPDO.php";
+include_once ROOT . "/models/connexionPDO.php";
 
 //Attributs de la class
 class Hero
@@ -68,7 +68,7 @@ class Hero
     // Met à jour les données du hero localement en rechargeant les informations depuis la base.
     public function majFromPDO($mysqlClient) {
         $id = $this->hero_id;
-        $sql = "SELECT * FROM HERO WHERE user_id = :id";
+        $sql = "SELECT * FROM HERO WHERE hero_id = :id";
         $cur = preparerRequetePDO($mysqlClient, $sql);
         ajouterParamPDO($cur, ':id', $id);
         $donnee = [];
@@ -83,7 +83,12 @@ class Hero
         $id = $this->hero_id;
         $id_type = 1;
         //requete pour recuperer le bonus que confere l'arme equipe par le hero.
-        $sql = "SELECT ITEMS_EFFICIENCY FROM ITEMS JOIN TYPEEQUIPMENT USING(ITEMS_ID) JOIN EQUIPMENT USING(ITEMS_ID) WHERE hero_id = :id and TYPEEQUIPMENT_TYPE = :id_type";
+        $sql = "SELECT ITEMS_EFFICIENCY FROM ITEMS 
+                JOIN TYPEEQUIPMENT USING(ITEMS_ID) 
+                JOIN EQUIPMENT USING(ITEMS_ID) 
+                WHERE hero_id = :id 
+                and TYPEEQUIPMENT_TYPE = :id_type";
+
         $cur = preparerRequetePDO($mysqlClient, $sql);
         ajouterParamPDO($cur, ':id', $id);
         ajouterParamPDO($cur, ':id_type', $id_type);
@@ -102,16 +107,15 @@ class Hero
     public function canThisSpell($mysqlClient,$spell_id) {
         $id = $this->hero_id;
         $sql = "SELECT SPELL_COST FROM SPELL JOIN SPELLLIST USING(SPELL_ID) JOIN HERO USING(HERO_ID) WHERE hero_id = :id and SPELL_ID = :id_spell and (hero_mana-spell_cost) > 0";
-                            $cur = preparerRequetePDO($mysqlClient, $sql);
-                            ajouterParamPDO($cur, ':id', $id);
-                            ajouterParamPDO($cur, ':id_spell', $spell_id);
-                            $donnee = [];
-                            $res = LireDonneesPDOPreparee($cur, $donnee);
-    
-                            if($res > 0) {
-                                return $donnee[0]["spell_cost"];
-                            }
-        else {
+        $cur = preparerRequetePDO($mysqlClient, $sql);
+        ajouterParamPDO($cur, ':id', $id);
+        ajouterParamPDO($cur, ':id_spell', $spell_id);
+        $donnee = [];
+        $res = LireDonneesPDOPreparee($cur, $donnee);
+
+        if($res > 0) {
+            return $donnee[0]["spell_cost"];
+        }   else {
             return -1;
         }
     }
@@ -162,14 +166,13 @@ class Hero
         else {
             $diff = max(0,$damage - ($this->hero_strength/2 + $bonus_armure + $deDefenseur));
         }
-
-        $sql = "UPDATE HERO SET HERO_PV = HERO_PV - :diff WHERE hero_id = :id";
+        $this->hero_pv -= $diff;
+        $sql = "UPDATE HERO SET HERO_PV = :pvHero WHERE hero_id = :id";
         $cur = preparerRequetePDO($mysqlClient, $sql);
         ajouterParamPDO($cur, ':id', $id,'nombre');
-        ajouterParamPDO($cur, ':diff', $diff,'nombre');
+        ajouterParamPDO($cur, ':pvHero', $this->hero_pv,'nombre');
         $donnee = [];
         $res1 = $cur->execute();
-        $this->hero_pv -= $diff;
     }
 
     //Fonction retournant un booleen afin de savoir si un item est contenu dans l'inventaire du hero

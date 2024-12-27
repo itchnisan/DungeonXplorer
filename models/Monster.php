@@ -119,28 +119,28 @@ class Monster
     public function takeDamage($mysqlClient, $damage)
 {
     $deDefenseur = rand(1, 6);
-    $id = $this->monster_id;
+    //$id = $this->monster_id;
     $diff = max(0, $damage - ($this->monster_strength / 2 + $deDefenseur)); //soustraction des degats apres calcul de la defense
 
-    //requete mettant a jour les pv du monstre dans la base.
-    $sql = "UPDATE MONSTER SET MONSTER_PV = MONSTER_PV - :diff WHERE monster_id = :id";
+    // //requete mettant a jour les pv du monstre dans la base.
+    // $sql = "UPDATE MONSTER SET MONSTER_PV = MONSTER_PV - :diff WHERE monster_id = :id";
     
-    // Préparer la requête
-    $cur = preparerRequetePDO($mysqlClient, $sql);
+    // // Préparer la requête
+    // $cur = preparerRequetePDO($mysqlClient, $sql);
 
-    // Ajouter les paramètres
-    ajouterParamPDO($cur, ':id', $id, 'nombre');
-    ajouterParamPDO($cur, ':diff', $diff, 'nombre');
+    // // Ajouter les paramètres
+    // ajouterParamPDO($cur, ':id', $id, 'nombre');
+    // ajouterParamPDO($cur, ':diff', $diff, 'nombre');
     
-    // Exécution de la requête et gestion des erreurs
-    $res = $cur->execute();
+    // // Exécution de la requête et gestion des erreurs
+    // $res = $cur->execute();
 
-    if (!$res) {
-        // Si la requête échoue, afficher l'erreur PDO
-        echo "Erreur d'exécution SQL : " . implode(", ", $cur->errorInfo());
-    } else {
-        echo "Mise à jour réussie. Dégâts infligés : " . $diff . " points.\n";
-    }
+    // if (!$res) {
+    //     // Si la requête échoue, afficher l'erreur PDO
+    //     echo "Erreur d'exécution SQL : " . implode(", ", $cur->errorInfo());
+    // } else {
+    //     echo "Mise à jour réussie. Dégâts infligés : " . $diff . " points.\n";
+    // }
 
     // Mise à jour des PV du monstre localement
     $this->monster_pv -= $diff;

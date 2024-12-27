@@ -1,9 +1,12 @@
 <?php
 
 // controllers/ChapterController.php
+require_once ROOT . "/models/connexionPDO.php";
+require_once ROOT . "/models/Hero.php";
+require_once ROOT . '/models/Chapter.php';
 
-require_once 'models/Chapter.php';
-include_once "models/connexionPDO.php";
+
+session_start();
 
 //require_once 'views/chapter_view.php';
 
@@ -58,7 +61,6 @@ class ChapterController
     public function __construct()
     {
         
-        //A changer si le temps
         $chapt = $this->getChaptersFromDatabase(OuvrirConnexionPDO('mysql:host=localhost;dbname=dx_10;charset=utf8', 'root' , ''));
 
         foreach ($chapt as $chapter) {
@@ -69,7 +71,24 @@ class ChapterController
 
     public function show($id)
     {
+
+        
+
         $chapter = $this->getChapter($id);
+
+        $hero = $_SESSION['hero'];
+        $idUser = $hero->getHeroId();
+        $_SESSION['chapitre'] = $id;
+        
+        $mysqlClient = new PDO('mysql:host=localhost;dbname=dx_10', 'root', '');
+        
+        $sqlUp = "UPDATE quest SET chapter_id = :chapID WHERE hero_id = :id";
+        $cur = preparerRequetePDO($mysqlClient, $sqlUp);
+        
+        ajouterParamPDO($cur, ':chapID', $id,'nombre');
+        ajouterParamPDO($cur, ':id', $idUser,'nombre');
+        $donnee = [];
+        $res1 = $cur->execute();
         
 
         if ($chapter) {

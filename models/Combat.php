@@ -1,7 +1,6 @@
 <?php
-
-include_once "../models/Hero.php";
-include_once "../models/Monster.php";
+include_once "Hero.php";
+include_once "Monster.php";
 
 //Attributs de la classe
 class Combat
@@ -14,12 +13,12 @@ class Combat
     private $mysqlClient;
 
     //Constructeur de la classe qui prend en parametre un hero.
-    public function __construct($mysqlClient,$hero)
-    {
+    public function __construct($mysqlClient,$hero) {
         $this->hero = $hero;
         $monster = new Monster();
 
         $id = $hero->getHeroId();
+        echo $id;
         
         $sql = "select monster_id,monster_name,monster_pv,monster_mana,monster_initiative,monster_strength,monster_attack,monster_xp from quest
                 JOIN encounter USING (chapter_id)
@@ -31,7 +30,6 @@ class Combat
         $donnee = [];
         $res = LireDonneesPDOPreparee($cur, $donnee);
         
-        var_dump($donnee);
         $monster->firstMajFromPDO($mysqlClient,$donnee[0]["monster_id"]);
 
         $this->monster = $monster;
@@ -41,8 +39,7 @@ class Combat
     }
 
       // Getters et Setters
-    public function getHero()
-    {
+    public function getHero() {
         return $this->hero;
     }
 
