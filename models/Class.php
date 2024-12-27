@@ -4,77 +4,132 @@
 
 abstract class Classe
 {
-    protected $id;
-    protected $name;
-    protected $description;
-    protected $base_pv;
-    protected $base_mana;
-    protected $strength;
-    protected $initiative;
-    protected $max_itemes;
+    protected $class_id;
+    protected $class_name;
+    protected $class_description;
+    protected $class_base_pv;
+    protected $class_base_mana;
+    protected $class_strength;
+    protected $class_initiative;
+    protected $class_max_itemes;
 
-    public function __construct($id, $name, $desc, $health, $mana, $initiative, $strength, $max_itemes)
+    public function __construct()
     {
-        $this->id = $id;
-        $this->name = $name;
-        $this->description = $desc;
-        $this->base_pv = $health;
-        $this->base_mana = $mana;
-        $this->strength = $strength;
-        $this->initiative = $initiative;
-        $this->max_itemes = $max_itemes;
+        $this->class_id = null;
+        $this->class_name = null;
+        $this->class_description = null;
+        $this->class_base_pv = null;
+        $this->class_base_mana = null;
+        $this->class_strength = null;
+        $this->class_initiative = null;
+        $this->class_max_itemes = null;
     }
 
-    public function hydrate(array $donnees) {
+    public function hydrate(array $donnees)
+    {
         foreach ($donnees as $key => $value) {
-          // On récupère le nom du setter correspondant à l'attribut
-          $method = 'set'.ucfirst($key);
-              
-          // Si le setter correspondant existe.
-          if (method_exists($this, $method)) {
-            // On appelle le setter
-            $this->$method($value);
-          }
+            $method = 'set' . str_replace(' ', '', ucwords(str_replace('_', ' ', $key)));
+
+            if (method_exists($this, $method)) {
+                $this->$method($value);
+            }
         }
-      }
-
-    public function getId()
-    {
-        return $this->id;
     }
 
-    public function getName()
+    // Getter et Setter pour class_id
+    public function getClassId()
     {
-        return $this->name;
+        return $this->class_id;
     }
 
-    public function getDesc()
+    public function setClassId($class_id): self
     {
-        return $this->description;
+        $this->class_id = $class_id;
+        return $this;
     }
 
-    public function getHealth()
+    // Getter et Setter pour class_name
+    public function getClassName()
     {
-        return $this->base_pv;
+        return $this->class_name;
     }
 
-    public function getMana()
+    public function setClassName($class_name): self
     {
-        return $this->base_mana;
+        $this->class_name = $class_name;
+        return $this;
     }
 
-    public function getStrength()
+    // Getter et Setter pour class_description
+    public function getClassDescription()
     {
-        return $this->strength;
+        return $this->class_description;
     }
 
-    public function getInitiative()
+    public function setClassDescription($class_description): self
     {
-        return $this->initiative;
+        $this->class_description = $class_description;
+        return $this;
     }
 
-    public function getMax_items()
+    // Getter et Setter pour class_base_pv
+    public function getClassBasePv()
     {
-        return $this->max_itemes;
+        return $this->class_base_pv;
     }
+
+    public function setClassBasePv($class_base_pv): self
+    {
+        $this->class_base_pv = $class_base_pv;
+        return $this;
+    }
+
+    // Getter et Setter pour class_base_mana
+    public function getClassBaseMana()
+    {
+        return $this->class_base_mana;
+    }
+
+    public function setClassBaseMana($class_base_mana): self
+    {
+        $this->class_base_mana = $class_base_mana;
+        return $this;
+    }
+
+    // Getter et Setter pour class_strength
+    public function getClassStrength()
+    {
+        return $this->class_strength;
+    }
+
+    public function setClassStrength($class_strength): self
+    {
+        $this->class_strength = $class_strength;
+        return $this;
+    }
+
+    // Getter et Setter pour class_initiative
+    public function getClassInitiative()
+    {
+        return $this->class_initiative;
+    }
+
+    public function setClassInitiative($class_initiative): self
+    {
+        $this->class_initiative = $class_initiative;
+        return $this;
+    }
+
+    // Getter et Setter pour class_max_itemes
+    public function getClassMaxItemes()
+    {
+        return $this->class_max_itemes;
+    }
+
+    public function setClassMaxItemes($class_max_itemes): self
+    {
+        $this->class_max_itemes = $class_max_itemes;
+        return $this;
+    }
+
 }

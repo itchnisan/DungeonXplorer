@@ -10,12 +10,16 @@ session_start();
 	}
 	else
 	{
-		$_SESSION['isAdmin'] = false;
+		//on reinitialise toutes les variables de session.
 		unset($_SESSION['numero']);
 		unset($_SESSION['courriel']);
 		unset($_SESSION['hero']);
+
 		unset($_SESSION['spellList']);
 		unset($_SESSION['equipments']);
+
+		//On met le booeleen loggedIn a false.
+
 		$_SESSION['loggedin'] = false;
 	}
 ?>
