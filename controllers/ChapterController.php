@@ -82,7 +82,7 @@ class ChapterController
     public function show($id)
     {
         $chapter = $this->getChapter($id);
-        
+        $db = OuvrirConnexionPDO('mysql:host=localhost;dbname=dx_10;charset=utf8', 'root', '');
 
         if ($chapter) {
             // Récupération de l'inventaire pour la vue
