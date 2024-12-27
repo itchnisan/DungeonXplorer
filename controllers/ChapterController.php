@@ -10,40 +10,38 @@ include_once "models/connexionPDO.php";
 class ChapterController
 {
     private $chapters = [];
-     
 
-    public function getChaptersFromDatabase($db)
-{
-    $query = $db->query("SELECT * FROM chapter");
-    $chapters = array();
+    public function getChaptersFromDatabase($db) {
+        $query = $db->query("SELECT * FROM chapter");
+        $chapters = array();
 
-    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-        $chapter = new Chapter();
-        $chapter->hydrate($row);
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $chapter = new Chapter();
+            $chapter->hydrate($row);
 
-        // Préparer la requête pour récupérer les liens
-        $stmt = $db->prepare("SELECT links.* FROM links WHERE chapter_id = :chapter_id");
-        $stmt->execute(['chapter_id' => $chapter->getChapterId()]);
+            // Préparer la requête pour récupérer les liens
+            $stmt = $db->prepare("SELECT links.* FROM links WHERE chapter_id = :chapter_id");
+            $stmt->execute(['chapter_id' => $chapter->getChapterId()]);
 
-        // Ajouter les informations des liens au chapitre
-        while ($link = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $chapter->addLink([
-                'description' => $link['description'],
-                'chapter_id' => $link['next_chapter_id']
-            ]);
+            // Ajouter les informations des liens au chapitre
+            while ($link = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $chapter->addLink([
+                    'description' => $link['description'],
+                    'chapter_id' => $link['next_chapter_id']
+                ]);
+            }
+
+            array_push($chapters, $chapter);
         }
 
-        array_push($chapters, $chapter);
+        return $chapters;
     }
-
-    return $chapters;
-}
 
     public function __construct()
     {
         
 
-        $chapt = $this->getChaptersFromDatabase(OuvrirConnexionPDO('mysql:host=localhost;dbname=dx10_bd;charset=utf8', 'root' , ''));
+        $chapt = $this->getChaptersFromDatabase(OuvrirConnexionPDO('mysql:host=localhost;dbname=dx_10;charset=utf8', 'root' , ''));
 
         foreach ($chapt as $chapter) {
             $this->chapters= $chapt;

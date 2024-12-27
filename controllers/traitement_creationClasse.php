@@ -91,12 +91,14 @@ function creerClasse($mysqlClient) {
     // ajouterParamPDO($cur, ':armor', $heroArmor);
     // ajouterParamPDO($cur, ':primary_weapon', $heroPrimary);
     // ajouterParamPDO($cur, ':secondary_weapon', $heroSecondary);
-    //ajouterParamPDO($cur, ':shield', $heroShield);
-    //ajouterParamPDO($cur, ':spell_list', $heroSpellList);
+    // ajouterParamPDO($cur, ':shield', $heroShield);
+    // ajouterParamPDO($cur, ':spell_list', $heroSpellList);
     ajouterParamPDO($cur, ':xp', $heroXp);
     ajouterParamPDO($cur, ':current_level', $heroCurrentLevel);
 
     $res = majDonneesPrepareesPDO($cur);
+
+    header("Location: ../Chapter/1");
 }
 
 if ($mysqlClient) {
