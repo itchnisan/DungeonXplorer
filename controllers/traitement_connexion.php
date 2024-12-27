@@ -14,7 +14,6 @@ include_once "../models/Hero.php";
 $_SESSION['loggedin'] = false;//un bool pour savoir si un utilisateur est id.
 $_SESSION['numero'] = null; //Le numero du compte,côté bdd c'est user_id
 $_SESSION['courriel'] = null; //Le mail du compte
-$_SESSION['hero'] = new Hero(); //On instancie un hero ou tout les attributs sont nuls pour l'instant
 
 
 $_SESSION['isAdmin'] = false;

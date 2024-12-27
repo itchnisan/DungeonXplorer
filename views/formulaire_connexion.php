@@ -18,6 +18,10 @@
     <form id="formulaireDeconnexion" name="formulaireDeconnexion" action = "../controllers/traitement_deconnexion.php" method="post">
     <br>
       <button type="submit" name="BtSub" >Deconnexion</button>
+    <br>
+    <a href="../views/formulaire_inscription.php">
+      <button type="button">Pas encore inscrit ? Inscrivez-vous</button>
+    </a>
     </form>
 </div>
   </body>
