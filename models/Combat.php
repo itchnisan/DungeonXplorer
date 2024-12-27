@@ -18,7 +18,6 @@ class Combat
         $monster = new Monster();
 
         $id = $hero->getHeroId();
-        echo $id;
         
         $sql = "select monster_id,monster_name,monster_pv,monster_mana,monster_initiative,monster_strength,monster_attack,monster_xp from quest
                 JOIN encounter USING (chapter_id)

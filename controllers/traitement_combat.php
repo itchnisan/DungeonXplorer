@@ -10,6 +10,9 @@ session_start();
 
 // Initialiser le combat
 $combat = new Combat($mysqlClient, $_SESSION['hero']);
+echo "<div class ="."container".">";
+ echo "<h1> Combat !  </h1>";
+echo "<div class ="."text-block".">";
 
 // On utilise une boucle infinie pour simuler le combat
 while ($combat->getHero()->getHeroPv() > 0 && $combat->getMonster()->getMonsterPv() > 0) {
@@ -43,7 +46,7 @@ while ($combat->getHero()->getHeroPv() > 0 && $combat->getMonster()->getMonsterP
         $donneeChap = [];
         $res = LireDonneesPDOPreparee($curLinks, $donneeChap);
 
-        
+        echo "<p>Le combat est terminé !</p>";
         echo "<form action='../Chapter/" . $donneeChap[0]['next_chapter_id'] . "' method='get'>
             <button type='submit'>Dommage </button>
             </form>";
@@ -52,14 +55,14 @@ while ($combat->getHero()->getHeroPv() > 0 && $combat->getMonster()->getMonsterP
     }
 
     if ($combat->getMonster()->getMonsterPv() <= 0) {
-
+        echo "<p>Le monstre a été vaincu.</p>";
         //verification vers quelle chapitre le hero doit etre envoyer  si il gagne
         $sqllinks = "SELECT next_chapter_id FROM links WHERE chapter_id = :chapitreActu and description = 'win'";
         $curLinks = preparerRequetePDO($mysqlClient, $sqllinks);
         ajouterParamPDO($curLinks, ':chapitreActu', $_SESSION['chapitre'], 'texte');
         $donneeChap = [];
         $res = LireDonneesPDOPreparee($curLinks, $donneeChap);
-        
+        echo "<p>Le combat est terminé !</p>";
         echo "<form action='../Chapter/" . $donneeChap[0]['next_chapter_id'] . "' method='get'>
             <button type='submit'>Bravo continuer l'aventure </button>
             </form>";
@@ -76,6 +79,7 @@ while ($combat->getHero()->getHeroPv() > 0 && $combat->getMonster()->getMonsterP
 }
 
 // Afficher le résultat final
-echo "<p>Le combat est terminé !</p>";
+echo "</div>";
+echo "</div>";
 
 ?>
