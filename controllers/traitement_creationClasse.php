@@ -1,8 +1,8 @@
 <?php
 session_start();
-
+include_once "../ref.php";
 include_once "../models/connexionPDO.php";
-include_once "../index.php";
+
 include_once "../models/Class.php";
 include_once "../models/Guerrier.php";
 include_once "../models/Voleur.php";
