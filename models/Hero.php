@@ -38,7 +38,7 @@ class Hero
 
         
     }
-
+    
     // Méthode hydrate
     // Méthode permettant de remplir les attributs de l'objet à partir d'un tableau associatif.
     public function hydrate(array $donnees)

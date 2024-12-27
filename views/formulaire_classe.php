@@ -26,7 +26,7 @@
         <button type="submit">Valider</button>
     </form>
     <h2>Vous avez deja un personnage ?</h2>
-    <button id ="deja">Choisir un ancien personnage</button>
+    <a href="../controllers/ancienController.php" class="button">Choisir un ancien personnage</a>
 </div>
 </body>
 </html>
