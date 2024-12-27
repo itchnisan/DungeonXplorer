@@ -17,6 +17,9 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 }
 
 function creerClasse($mysqlClient) {
+    if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+        return;
+    }    
     if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         if (!empty($_POST["nom"]) /*&& !empty($_POST["image"]*/  && !empty($_POST["biography"]))/*)*/ {

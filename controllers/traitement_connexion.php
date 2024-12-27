@@ -17,7 +17,6 @@ $_SESSION['numero'] = null; //Le numero du compte,côté bdd c'est user_id
 $_SESSION['courriel'] = null; //Le mail du compte
 
 
-
 $_SESSION['isAdmin'] = false;
 
 $_SESSION['spellList'] = null;
