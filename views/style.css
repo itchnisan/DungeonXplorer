@@ -37,7 +37,7 @@ p,label {
     margin-bottom: 20px;
 }
 
-button, a.button {
+button, a.button, a {
     display: block;
     background-color: #4f3222; /* Brun foncé */
     color: #d4af37; /* Doré */
