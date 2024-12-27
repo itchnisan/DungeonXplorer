@@ -1,5 +1,6 @@
 <?php
 include_once "../index.php";
+
 session_start();
 
 function afficherObj($obj)
@@ -8,9 +9,6 @@ function afficherObj($obj)
     print_r($obj);
     echo "</PRE>";
 }
-
-include_once "../models/connexionPDO.php";
-include_once "../models/Hero.php";
 
 $_SESSION['loggedin'] = false;//un bool pour savoir si un utilisateur est id.
 $_SESSION['numero'] = null; //Le numero du compte,côté bdd c'est user_id

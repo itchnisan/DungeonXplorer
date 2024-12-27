@@ -29,7 +29,7 @@ class Combat
         ajouterParamPDO($cur, ':id', $id);
         $donnee = [];
         $res = LireDonneesPDOPreparee($cur, $donnee);
-        
+
         $monster->firstMajFromPDO($mysqlClient,$donnee[0]["monster_id"]);
 
         $this->monster = $monster;

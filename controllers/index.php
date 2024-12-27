@@ -87,6 +87,7 @@ $router = new Router('DungeonXplorer');
 $router->addRoute('Chapter/{id}', 'ChapterController@show'); // Pour la liste des tâches
 // $router->addRoute('tasks/{id}', 'TaskController@show'); // Pour afficher une tâche par ID
 // $router->addRoute('about', 'AboutController@index'); // Pour la page "about"
+$router->addRoute('addToInventory', 'ChapterController@addToInventory');
 
 // Appel de la méthode route
 $router->route('Chapter/1');

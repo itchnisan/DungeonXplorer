@@ -19,9 +19,8 @@
     <br>
       <button type="submit" name="BtSub" >Deconnexion</button>
     <br>
-    <a href="../views/formulaire_inscription.php">
-      <button type="button">Pas encore inscrit ? Inscrivez-vous</button>
-    </a>
+    <a class="button" href="../views/formulaire_inscription.php">
+      Pas encore inscrit ? Inscrivez-vous </a>
     </form>
 </div>
   </body>

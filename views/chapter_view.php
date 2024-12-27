@@ -54,9 +54,9 @@ require_once 'controllers/ChapterController.php';
     <div id="inventoryModal" class="modal">
     <div class="modal-content">
         <span class="close-button">&times;</span>
-            <h2>Votre Inventaire</h2>
-            <?php if (!empty($heroInventory)): ?>
-                <div class="text-block">
+        <h2>Votre Inventaire</h2>
+        <?php if (!empty($heroInventory)): ?>
+            <div class="text-block">
                 <ul>
                     <?php foreach ($heroInventory as $item): ?>
                         <li>
@@ -64,23 +64,51 @@ require_once 'controllers/ChapterController.php';
                             <em><?php echo htmlspecialchars($item['description']); ?></em><br>
                             Taille : <?php echo htmlspecialchars($item['size']); ?><br>
                             Efficacité : <?php echo htmlspecialchars($item['efficiency']); ?><br>
-                            Quantité : <?php echo htmlspecialchars($item['amount']); ?>
+                            Quantité : <?php echo htmlspecialchars($item['amount']); ?><br>
+                            <!-- Ajouter le bouton de suppression -->
+                            <form method="post" action="../controllers/deleteItem.php">
+                                <input type="hidden" name="item_id" value="<?php echo htmlspecialchars($item['item_id']); ?>">
+                                <input type="hidden" name="hero_id" value="<?php echo htmlspecialchars($hero->getHeroId()); ?>"> <!-- ID du héros -->
+                                <input type="hidden" name="chapter_id" value="<?php echo htmlspecialchars($chapter->getChapterId()); ?>">
+                                <input type="hidden" name="inventory_id" value="<?php echo htmlspecialchars($item['inventory_id']); ?>">
+                                <button type="submit" name="delete_item" onclick="return confirm('La suppression est definitive, Voulez-vous vraiment le jeter par terre ?')">Jeter par terre</button>
+                            </form>
                         </li>
                     <?php endforeach; ?>
                 </ul>
-                </div>
-            <?php else: ?>
-                <p>Aucun objet dans l'inventaire.</p>
-            <?php endif; ?>
-        </div>
+            </div>
+        <?php else: ?>
+            <p>Aucun objet dans l'inventaire.</p>
+        <?php endif; ?>
     </div>
-
+    </div>
     <div class="container">
         <h1><?php echo htmlspecialchars($chapter->getChapterNom()); ?></h1>
         <img src="../<?php echo htmlspecialchars($chapter->getChapterImage()); ?>" alt="Image de chapitre">
         <div class="text-block">
             <p><?php echo nl2br(htmlspecialchars($chapter->getChapterContent())); ?></p>
         </div>
+        <?php if (!empty($treasure)): ?>
+            <h2>Vous avez trouvé un trésor !</h2>
+                <div class="text-block">
+                <ul>
+                    <?php foreach ($treasure as $item): ?>
+                        <li>
+                            <strong><?php echo htmlspecialchars($item['name']); ?></strong><br>
+                            <em><?php echo htmlspecialchars($item['description']); ?></em><br>
+                            Taille : <?php echo htmlspecialchars($item['size']); ?><br>
+                            Efficacité : <?php echo htmlspecialchars($item['efficiency']); ?><br>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+                <form action="../controllers/addToInventoryController.php" method="POST">
+                    <input type="hidden" name="item_id" value="<?php echo htmlspecialchars($item['id']); ?>">
+                    <input type="hidden" name="hero_id" value="<?php echo htmlspecialchars($hero->getHeroId()); ?>">
+                    <input type="hidden" name="chapter_id" value="<?php echo htmlspecialchars($chapter->getChapterId()); ?>">
+                    <button type="submit" class="button" onclick="return alert('Item récuperé et ajouté à votre inventaire')">Prendre l'item</button>
+                </form>
+                </div>
+        <?php endif; ?>
         <h2>Choisissez votre chemin:</h2>
         <ul>
             <?php foreach ($chapter->getLinks() as $choice): ?>
@@ -92,6 +120,8 @@ require_once 'controllers/ChapterController.php';
             <?php endforeach; ?>
         </ul>
     </div>
+
+    <!--treasure du chapitre-->
 
     <script>
         const inventoryButton = document.getElementById('inventoryButton');

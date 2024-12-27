@@ -1,5 +1,6 @@
 <?php
 require_once 'models/Hero.php';
+require_once 'models/Treasure.php';
 require_once 'models/Chapter.php';
 require_once 'models/Inventory.php';
 require_once 'models/Items.php';
@@ -16,6 +17,7 @@ include_once "models/connexionPDO.php";
 
 class ChapterController
 {
+    private $treasures = [];
     private $chapters = [];
     private $heroInventory = []; // Nouveau : stockage de l'inventaire du héros
 
@@ -69,30 +71,73 @@ class ChapterController
     // Nouveau : récupération de l'inventaire d'un héros
     public function getHeroInventory($heroId, $db)
     {
-        
-        //A changer si le temps
-        $chapt = $this->getChaptersFromDatabase(OuvrirConnexionPDO('mysql:host=localhost;dbname=dx_10;charset=utf8', 'root' , ''));
+        $stmt = $db->prepare("
+            SELECT inventory.*, items.items_name, items.items_description, items.items_size, items.items_efficiency
+            FROM inventory
+            JOIN items ON inventory.items_id = items.items_id
+            WHERE inventory.hero_id = :hero_id
+        ");
+        $stmt->execute(['hero_id' => $heroId]);
 
-        foreach ($chapt as $chapter) {
-            $this->chapters= $chapt;
+        $inventory = [];
+
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $item = [
+                'inventory_id' => $row['inventory_id'],
+                'item_id' => $row['items_id'],
+                'name' => $row['items_name'],
+                'description' => $row['items_description'],
+                'size' => $row['items_size'],
+                'efficiency' => $row['items_efficiency'],
+                'amount' => $row['items_amount'],
+            ];
+            $inventory[] = $item;
         }
+
+        $this->heroInventory = $inventory; // Stockage de l'inventaire
+        return $inventory;
     }
     
 
     public function show($id)
     {
         $chapter = $this->getChapter($id);
-        
+        $db = OuvrirConnexionPDO('mysql:host=localhost;dbname=dx_10;charset=utf8', 'root', '');
 
         if ($chapter) {
             // Récupération de l'inventaire pour la vue
                 $hero =$_SESSION['hero'];
                 $heroInventory = $this->getHeroInventory($hero->getHeroId(), $db);
+                $treasure = $this->getTreasure($id);
             include 'views/chapter_view.php'; // Charge la vue pour le chapitre
         } else {
             header('HTTP/1.0 404 Not Found');
             echo "Chapitre non trouvé!";
         }
+    }
+
+    public function getTreasure($id){
+        $treasure = null;
+        $db = OuvrirConnexionPDO('mysql:host=localhost;dbname=dx_10;charset=utf8', 'root', '');
+        $sqlTreasure = $db->prepare("SELECT chapter_treasure.*, items.items_name, items.items_description, items.items_size, items.items_efficiency
+            FROM chapter_treasure
+            JOIN items ON chapter_treasure.item_id = items.items_id
+            WHERE chapter_treasure.chapter_id = :chapter_id");
+            $sqlTreasure->execute(['chapter_id' => $id]);
+            $treasure = [];
+        while ($row = $sqlTreasure->fetch(PDO::FETCH_ASSOC)) {
+            $item = [
+                'id' => $row['item_id'],
+                'name' => $row['items_name'],
+                'description' => $row['items_description'],
+                'size' => $row['items_size'],
+                'efficiency' => $row['items_efficiency']
+            ];
+            $treasure[] = $item;
+        }
+
+        $this->treasures = $treasure; // Stockage de l'inventaire
+        return $treasure;
     }
 
     public function getChapter($id)
